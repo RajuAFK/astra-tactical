@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@theme {
+  --color-phosphor: #ff5722;
+  --color-amber-tac: #FF6B00;
+  --color-tactical-gray: #8A8A8A;
+  --color-hud-green: rgba(255, 87, 34, 0.03);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0, 0); filter: none; }
+  20% { transform: translate(-2px, 1px); filter: drop-shadow(2px 0 #ff0000); }
+  40% { transform: translate(2px, -1px); filter: drop-shadow(-2px 0 #00ffff); }
+  60% { transform: translate(-1px, 2px); filter: none; }
+  80% { transform: translate(1px, -2px); filter: drop-shadow(1px 0 #ff5722); }
+}
+
+@keyframes scanpulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes spinClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinAntiClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+:root {
+  --bg: #0A0A0A;
+  --phosphor: #ff5722;
+  --amber: #FF6B00;
+  --gray: #8A8A8A;
+}
+
+body {
+  background-color: var(--bg);
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 87, 34, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 87, 34, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hud-corner {
+  position: relative;
+}
+
+.hud-corner::before,
+.hud-corner::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: #ff5722;
+  border-style: solid;
+  opacity: 0.7;
+}
+
+.hud-corner::before {
+  top: 0;
+  left: 0;
+  border-width: 1px 0 0 1px;
+}
+
+.hud-corner::after {
+  top: 0;
+  right: 0;
+  border-width: 1px 1px 0 0;
+}
+
+.hud-corner-bottom {
+  position: relative;
+}
+
+.hud-corner-bottom::before,
+.hud-corner-bottom::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: #ff5722;
+  border-style: solid;
+  opacity: 0.7;
+}
+
+.hud-corner-bottom::before {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 1px 1px;
+}
+
+.hud-corner-bottom::after {
+  bottom: 0;
+  right: 0;
+  border-width: 0 1px 1px 0;
+}
+
+.animate-blink {
+  animation: blink 1.2s step-end infinite;
+}
+
+.animate-glitch {
+  animation: glitch 0.4s ease-in-out;
+}
+
+.animate-scanpulse {
+  animation: scanpulse 2s ease-in-out infinite;
+}

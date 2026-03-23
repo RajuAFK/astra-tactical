@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/USER/Desktop/claude-workspace/projects/**)",
+      "Bash(npx create-next-app@latest astra-tactical --typescript --tailwind --app --src-dir --no-git --yes)",
+      "Bash(npm install:*)",
+      "Bash(ls \"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\"/*.ts)",
+      "Bash(ls \"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\"/*.mjs)",
+      "Bash(\"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\\\\public\\\\videos\\\\.gitkeep\")",
+      "Bash(npm run:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where npm:*)",
+      "Bash(npm --version)",
+      "Bash(find '/c/Users/USER/Desktop/AstraTactix Tactical Solutions Pvt Ltd/Digital Assets/Web/Astra Final codebase' -type f \\\\\\(-name *.jsx -o -name *.js -o -name *.tsx -o -name *.ts -o -name *.css -o -name *.html \\\\\\))",
+      "Read(//c/Users/USER/Desktop/AstraTactix Tactical Solutions Pvt Ltd/**)",
+      "Bash(cp \"C:\\\\Users\\\\USER\\\\Desktop\\\\AstraTactix Tactical Solutions Pvt Ltd\\\\Digital Assets\\\\Web\\\\Astra Final codebase\\\\screen1-1.png\" \"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\\\\public\\\\screen-frame.png\")",
+      "Bash(cp \"C:\\\\Users\\\\USER\\\\Desktop\\\\AstraTactix Tactical Solutions Pvt Ltd\\\\Digital Assets\\\\Web\\\\Astra Final codebase\\\\assets\\\\middle1.png\" \"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\\\\public\\\\ring-middle.png\")",
+      "Bash(cp \"C:\\\\Users\\\\USER\\\\Desktop\\\\AstraTactix Tactical Solutions Pvt Ltd\\\\Digital Assets\\\\Web\\\\Astra Final codebase\\\\assets\\\\AIRSOFT GUN.png\" \"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\\\\public\\\\weapons\\\\airsoft-gun.png\")",
+      "Bash(cp \"C:\\\\Users\\\\USER\\\\Desktop\\\\AstraTactix Tactical Solutions Pvt Ltd\\\\Digital Assets\\\\Web\\\\Astra Final codebase\\\\assets\\\\AIRGUN.png\" \"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\\\\public\\\\weapons\\\\airgun.png\")",
+      "Bash(cp \"C:\\\\Users\\\\USER\\\\Desktop\\\\AstraTactix Tactical Solutions Pvt Ltd\\\\Digital Assets\\\\Web\\\\Astra Final codebase\\\\assets\\\\NERF GUN.png\" \"C:\\\\Users\\\\USER\\\\Desktop\\\\claude-workspace\\\\projects\\\\astra-tactical\\\\public\\\\weapons\\\\nerf-gun.png\")",
+      "Bash(find 'C:\\\\Users\\\\USER\\\\Desktop\\\\AstraTactix Tactical Solutions Pvt Ltd\\\\Digital Assets\\\\Web\\\\Astra Final codebase' -name *.js -o -name *.mp4)",
+      "Bash(SRC=\"C:/Users/USER/Desktop/AstraTactix Tactical Solutions Pvt Ltd/Digital Assets/Web/Astra Final codebase/assets\")",
+      "Bash(DEST=\"C:/Users/USER/Desktop/claude-workspace/projects/astra-tactical/public\")",
+      "Bash(__NEW_LINE_e3390ed46621fafc__ cp:*)",
+      "Bash(echo \"Video: $?\")",
+      "Read(//c/Users/USER/Desktop/claude-workspace/projects/astra-tactical/$DEST/**)",
+      "Bash(gh auth:*)",
+      "Bash(git --version)",
+      "Bash(git config:*)"
+    ]
+  }
+}
