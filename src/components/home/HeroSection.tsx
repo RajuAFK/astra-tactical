@@ -24,7 +24,7 @@ export default function HeroSection() {
         muted
         loop
         playsInline
-        src="/videos/hero.mp4"
+        src="https://pub-9df89263609345f4a555f6e0d4bdc389.r2.dev/hero.mp4"
         aria-label="Astra Tactical field footage background video"
       />
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { supabase } from '@/lib/supabase'
 import { ShieldCheck, Package, Shirt, Radio } from 'lucide-react'
 import HUDFrame from '@/components/ui/HUDFrame'
 import type { ElementType } from 'react'
@@ -49,9 +50,9 @@ export default function StorePage() {
     setModalOpen(true)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Store notify me:', { email, product: selectedProduct })
+    await supabase.from('registered_interest').insert({ email, product: selectedProduct })
     setSubmitted(true)
     setTimeout(() => setModalOpen(false), 2000)
   }
