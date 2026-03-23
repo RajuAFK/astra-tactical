@@ -36,7 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# wrangler
+.wrangler
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 /public/videos/*.mp4
+
+.vercel
