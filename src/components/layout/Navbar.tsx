@@ -91,25 +91,6 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/#register"
-              style={{
-                fontFamily: 'var(--font-rajdhani)',
-                fontSize: '13px',
-                fontWeight: 700,
-                color: '#ff5722',
-                border: '1px solid #ff5722',
-                padding: '6px 16px',
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                transition: 'background 0.2s',
-              }}
-              className="hover:bg-phosphor/10"
-              aria-label="Register your interest"
-            >
-              REGISTER INTEREST
-            </Link>
-
             {/* Mission Control user portal — link to be updated when hosted */}
             <Link
               href="/mission-control"
@@ -173,21 +154,6 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/#register"
-              style={{
-                fontFamily: 'var(--font-orbitron)',
-                fontSize: '14px',
-                color: '#ff5722',
-                border: '1px solid #ff5722',
-                padding: '10px 24px',
-                letterSpacing: '0.15em',
-              }}
-              onClick={() => setMobileOpen(false)}
-              aria-label="Register your interest"
-            >
-              REGISTER INTEREST
-            </Link>
           </nav>
         </div>
       )}

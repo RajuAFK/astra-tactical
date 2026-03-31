@@ -35,6 +35,49 @@ export default function HeroSection() {
         }}
         aria-hidden="true"
       />
+
+      {/* Scroll indicator */}
+      <a
+        href="#comparison"
+        aria-label="Scroll to next section"
+        style={{
+          position: 'absolute',
+          bottom: '36px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 20,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px',
+          cursor: 'pointer',
+        }}
+      >
+        {[0, 1, 2].map((i) => (
+          <svg
+            key={i}
+            width="28"
+            height="8"
+            viewBox="0 0 28 8"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{
+              animation: `scrollChevron 1.6s ease-in-out ${i * 0.2}s infinite`,
+              opacity: 0,
+            }}
+            aria-hidden="true"
+          >
+            <polyline
+              points="2,2 14,6 26,2"
+              stroke="rgba(255,255,255,0.7)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
+        ))}
+      </a>
     </section>
   )
 }
