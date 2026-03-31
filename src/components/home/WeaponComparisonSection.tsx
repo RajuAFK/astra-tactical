@@ -17,9 +17,8 @@ const WEAPONS = {
     velocityMs: 25,
     massG: 1.0,
     legalStatus: 'UNRESTRICTED',
-    statusColor: '#ff5722',
+    accentColor: '#22C55E',
     classLabel: 'TOY CLASS',
-    classColor: '#ff5722',
     image: '/weapons/nerf-gun.png',
     description: 'Foam dart blasters fire ~1g darts at 25 m/s — well under the 2J threshold and far less powerful than an airsoft gun.',
   },
@@ -29,9 +28,8 @@ const WEAPONS = {
     velocityMs: 85,
     massG: 3.0,
     legalStatus: 'RESTRICTED — Arms Act 1959',
-    statusColor: '#EF4444',
+    accentColor: '#3B82F6',
     classLabel: 'SPORT CLASS',
-    classColor: '#3B82F6',
     image: '/weapons/paintball.png',
     description: 'A .68-cal paintball travels at ~85 m/s with a 3g ball, generating ~10.8J — five times the energy of an airsoft round and above the 2J legal threshold.',
   },
@@ -41,9 +39,8 @@ const WEAPONS = {
     velocityMs: 120,
     massG: 0.2,
     legalStatus: 'LEGAL — Below 2J Threshold',
-    statusColor: '#ff5722',
+    accentColor: '#22C55E',
     classLabel: 'SPORT CLASS',
-    classColor: '#ff5722',
     image: '/weapons/airsoft-gun.png',
     description: 'Airsoft fires 6mm plastic BBs at under 2 joules — legal as sport equipment under Indian law, without an arms licence.',
   },
@@ -53,9 +50,8 @@ const WEAPONS = {
     velocityMs: 150,
     massG: 0.5,
     legalStatus: 'RESTRICTED — Arms Act 1959',
-    statusColor: '#EF4444',
+    accentColor: '#3B82F6',
     classLabel: 'RESTRICTED CLASS',
-    classColor: '#3B82F6',
     image: '/weapons/airgun.png',
     description: 'Sporting air pistols fire 0.5g pellets at ~150 m/s. At ~5.6J they exceed the 2J threshold, placing them under the Arms Act 1959.',
   },
@@ -65,9 +61,8 @@ const WEAPONS = {
     velocityMs: 370,
     massG: 7.5,
     legalStatus: 'LICENSED ONLY — Arms Act 1959',
-    statusColor: '#EF4444',
+    accentColor: '#EF4444',
     classLabel: 'FIREARMS CLASS',
-    classColor: '#EF4444',
     image: '/weapons/firearm.png',
     description: 'A 9mm round delivers ~510J — over 360× the energy of an airsoft gun. Strictly licensed only under the Arms Act.',
   },
@@ -130,8 +125,8 @@ export default function WeaponComparisonSection() {
                   aria-label={`Select ${w.name}`}
                   aria-pressed={isSelected}
                   style={{
-                    background: isSelected ? 'rgba(255,87,34,0.08)' : '#111111',
-                    border: `1px solid ${isSelected ? '#ff5722' : 'rgba(255,255,255,0.08)'}`,
+                    background: isSelected ? `${w.accentColor}14` : '#111111',
+                    border: `1px solid ${isSelected ? w.accentColor : 'rgba(255,255,255,0.08)'}`,
                     padding: '12px 16px',
                     cursor: 'pointer',
                     textAlign: 'left',
@@ -155,7 +150,7 @@ export default function WeaponComparisonSection() {
                   </div>
                   {/* Text info */}
                   <div>
-                    <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '9px', color: w.classColor, letterSpacing: '0.15em', marginBottom: '4px' }}>
+                    <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '9px', color: w.accentColor, letterSpacing: '0.15em', marginBottom: '4px' }}>
                       {w.classLabel}
                     </div>
                     <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '12px', color: '#ffffff' }}>
@@ -267,7 +262,7 @@ export default function WeaponComparisonSection() {
                 cy="190"
                 r="178"
                 fill="none"
-                stroke={weapon ? weapon.statusColor : '#ff5722'}
+                stroke={weapon ? weapon.accentColor : 'rgba(255,255,255,0.15)'}
                 strokeWidth="3"
                 strokeLinecap="butt"
                 strokeDasharray={`${(arcPct / 100) * (2 * Math.PI * 178)} ${2 * Math.PI * 178}`}
@@ -287,7 +282,7 @@ export default function WeaponComparisonSection() {
             {/* Energy readout — bottom of circle, below the gun image */}
             {weapon && (
               <div className="absolute text-center" style={{ zIndex: 10, bottom: '36px' }}>
-                <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '22px', color: weapon.statusColor, fontWeight: 900, lineHeight: 1 }}>
+                <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '22px', color: weapon.accentColor, fontWeight: 900, lineHeight: 1 }}>
                   {weapon.energyJ}J
                 </div>
                 <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '8px', color: '#8A8A8A', letterSpacing: '0.1em', marginTop: '4px' }}>
@@ -327,7 +322,7 @@ export default function WeaponComparisonSection() {
                 </div>
 
                 {/* Legal badge */}
-                <div style={{ border: `1px solid ${weapon.statusColor}`, color: weapon.statusColor, fontFamily: 'var(--font-space-mono)', fontSize: '9px', padding: '4px 10px', letterSpacing: '0.1em', display: 'inline-block', marginBottom: '12px' }}>
+                <div style={{ border: `1px solid ${weapon.accentColor}`, color: weapon.accentColor, fontFamily: 'var(--font-space-mono)', fontSize: '9px', padding: '4px 10px', letterSpacing: '0.1em', display: 'inline-block', marginBottom: '12px' }}>
                   {weapon.legalStatus}
                 </div>
 
