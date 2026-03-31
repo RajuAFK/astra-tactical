@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { User } from 'lucide-react'
 
 const navLinks = [
   { label: 'ABOUT', href: '/#about' },
@@ -32,7 +33,7 @@ export default function Navbar() {
         }}
         aria-label="Main navigation"
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center">
+        <div className="w-full px-6 py-4 flex items-center">
           {/* Logo + Wordmark */}
           <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="Astra Tactical home">
             <div style={{ position: 'relative', width: '32px', height: '32px', flexShrink: 0 }}>
@@ -107,6 +108,21 @@ export default function Navbar() {
               aria-label="Register your interest"
             >
               REGISTER INTEREST
+            </Link>
+
+            {/* Mission Control user portal — link to be updated when hosted */}
+            <Link
+              href="/mission-control"
+              aria-label="Mission Control user portal"
+              style={{
+                color: 'rgba(255,255,255,0.45)',
+                transition: 'color 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              className="hover:text-white"
+            >
+              <User size={18} strokeWidth={1.5} />
             </Link>
           </div>
 
