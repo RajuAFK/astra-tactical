@@ -24,24 +24,46 @@ export default function HeroSection() {
       {/* Scanlines */}
       <ScanlineOverlay />
 
-      {/* Screen frame */}
-      <div
-        className="absolute inset-0 z-10 pointer-events-none"
-        style={{
-          backgroundImage: 'url(/screen-frame.png)',
-          backgroundSize: '100% 100%',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}
+      {/*
+        Screen frame — SVG recreation of the original PNG shape.
+        Top bar: full-width, with a centre tab that extends further down, flanked by 45° chamfers.
+        Bottom bar: same inverted, with a centre tab that rises up into the video area.
+        No scroll-indicator symbol. preserveAspectRatio="none" so it stretches to any viewport.
+      */}
+      <svg
+        className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
         aria-hidden="true"
-      />
+      >
+        {/* Top bar */}
+        <polygon
+          points="0,0 100,0 100,7.8 68.4,7.8 66.6,10.3 33.4,10.3 31.6,7.8 0,7.8"
+          fill="#0A0A0A"
+        />
+        {/* Subtle inner edge line on top bar */}
+        <polyline
+          points="0,7.8 31.6,7.8 33.4,10.3 66.6,10.3 68.4,7.8 100,7.8"
+          fill="none"
+          stroke="rgba(255,255,255,0.07)"
+          strokeWidth="0.15"
+          vectorEffect="non-scaling-stroke"
+        />
 
-      {/* Cover the scroll symbol baked into screen-frame.png */}
-      <div
-        className="absolute pointer-events-none"
-        style={{ bottom: 0, left: 0, right: 0, height: '60px', background: '#0A0A0A', zIndex: 20 }}
-        aria-hidden="true"
-      />
+        {/* Bottom bar */}
+        <polygon
+          points="0,93 31.6,93 33.4,90.8 66.6,90.8 68.4,93 100,93 100,100 0,100"
+          fill="#0A0A0A"
+        />
+        {/* Subtle inner edge line on bottom bar */}
+        <polyline
+          points="0,93 31.6,93 33.4,90.8 66.6,90.8 68.4,93 100,93"
+          fill="none"
+          stroke="rgba(255,255,255,0.07)"
+          strokeWidth="0.15"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
     </section>
   )
 }
