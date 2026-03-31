@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Orbitron, Space_Mono, Rajdhani } from 'next/font/google'
+import { Orbitron, Space_Mono, Rajdhani, Barlow_Condensed } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -24,6 +24,13 @@ const rajdhani = Rajdhani({
   display: 'swap',
 })
 
+const barlowCondensed = Barlow_Condensed({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-barlow-condensed',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: "Astra Tactical | India's First Airsoft Ecosystem",
   description:
@@ -38,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${spaceMono.variable} ${rajdhani.variable}`}
+      className={`${orbitron.variable} ${spaceMono.variable} ${rajdhani.variable} ${barlowCondensed.variable}`}
     >
       <body style={{ fontFamily: 'var(--font-rajdhani), sans-serif' }}>
         <div

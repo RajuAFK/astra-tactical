@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const navLinks = [
   { label: 'ABOUT', href: '/#about' },
@@ -31,30 +32,29 @@ export default function Navbar() {
         }}
         aria-label="Main navigation"
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Wordmark */}
-          <Link href="/" className="flex items-center gap-2" aria-label="Astra Tactical home">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center">
+          {/* Logo + Wordmark */}
+          <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="Astra Tactical home">
+            <div style={{ position: 'relative', width: '32px', height: '32px', flexShrink: 0 }}>
+              <Image
+                src="/logos/logo-negative-space.png"
+                alt="Astra Tactical logo"
+                fill
+                sizes="32px"
+                style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
+              />
+            </div>
             <span
               style={{
-                fontFamily: 'var(--font-orbitron)',
-                fontSize: '18px',
-                color: '#ff5722',
-                fontWeight: 700,
-                letterSpacing: '0.2em',
-              }}
-            >
-              ASTRA
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--font-orbitron)',
-                fontSize: '18px',
+                fontFamily: 'var(--font-rajdhani)',
+                fontSize: '17px',
                 color: '#ffffff',
-                fontWeight: 400,
-                letterSpacing: '0.2em',
+                fontWeight: 600,
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
               }}
             >
-              TACTICAL
+              ASTRA TACTICAL
             </span>
             <span
               style={{
@@ -63,15 +63,14 @@ export default function Navbar() {
                 color: '#ff5722',
                 border: '1px solid rgba(255,87,34,0.4)',
                 padding: '1px 4px',
-                marginLeft: '8px',
               }}
             >
               [IN]
             </span>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop nav — pushed to the right */}
+          <div className="hidden md:flex items-center gap-8 ml-auto">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -79,8 +78,9 @@ export default function Navbar() {
                 style={{
                   fontFamily: 'var(--font-rajdhani)',
                   fontSize: '14px',
+                  fontWeight: 600,
                   color: '#8A8A8A',
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                   transition: 'color 0.2s',
                 }}
@@ -93,12 +93,14 @@ export default function Navbar() {
             <Link
               href="/#register"
               style={{
-                fontFamily: 'var(--font-orbitron)',
-                fontSize: '11px',
+                fontFamily: 'var(--font-rajdhani)',
+                fontSize: '13px',
+                fontWeight: 700,
                 color: '#ff5722',
                 border: '1px solid #ff5722',
-                padding: '6px 14px',
-                letterSpacing: '0.1em',
+                padding: '6px 16px',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
                 transition: 'background 0.2s',
               }}
               className="hover:bg-phosphor/10"
@@ -110,7 +112,7 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden flex flex-col gap-1 p-2"
+            className="md:hidden flex flex-col gap-1 p-2 ml-auto"
             onClick={() => setMobileOpen(true)}
             aria-label="Open mobile menu"
           >
