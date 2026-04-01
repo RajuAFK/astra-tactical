@@ -163,7 +163,7 @@ export default function StoreTeaserSection() {
         <div className="text-center">
           <a
             href="/store"
-            aria-label="Register interest in the Astra Tactical store"
+            aria-label="Explore the Astra Tactical store"
             style={{
               fontFamily: 'var(--font-orbitron)',
               fontSize: '13px',
@@ -175,7 +175,7 @@ export default function StoreTeaserSection() {
               letterSpacing: '0.1em',
             }}
           >
-            REGISTER INTEREST IN THE STORE →
+            EXPLORE THE STORE →
           </a>
         </div>
       </div>

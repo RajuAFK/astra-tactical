@@ -1,18 +1,7 @@
-'use client'
-
-import { useState } from 'react'
 import Link from 'next/link'
 import { Instagram, Youtube } from 'lucide-react'
 
 export default function Footer() {
-  const [email, setEmail] = useState('')
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Footer email registered:', email)
-    setEmail('')
-  }
-
   return (
     <footer
       style={{
@@ -23,7 +12,7 @@ export default function Footer() {
       aria-label="Site footer"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
           {/* Column 1 */}
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -121,76 +110,6 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* Column 3 */}
-          <div>
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '10px',
-                color: '#CFFF55',
-                opacity: 0.6,
-                letterSpacing: '0.15em',
-                marginBottom: '16px',
-              }}
-            >
-              REGISTER INTEREST
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-rajdhani)',
-                fontSize: '14px',
-                color: '#8A8A8A',
-                marginBottom: '16px',
-              }}
-            >
-              Be first to receive field invites and gear drops.
-            </p>
-            <form onSubmit={handleSubmit} className="flex gap-0" aria-label="Email registration form">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                aria-label="Your email address"
-                style={{
-                  flex: 1,
-                  background: 'transparent',
-                  borderTop: 'none',
-                  borderLeft: 'none',
-                  borderRight: 'none',
-                  borderBottom: '1px solid rgba(207,255,85,0.3)',
-                  color: '#ffffff',
-                  fontFamily: 'var(--font-rajdhani)',
-                  fontSize: '14px',
-                  outline: 'none',
-                  padding: '8px 0',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderBottomColor = '#CFFF55'
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderBottomColor = 'rgba(207,255,85,0.3)'
-                }}
-              />
-              <button
-                type="submit"
-                aria-label="Submit email registration"
-                style={{
-                  fontFamily: 'var(--font-orbitron)',
-                  fontSize: '11px',
-                  background: '#CFFF55',
-                  color: '#ffffff',
-                  padding: '8px 16px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  letterSpacing: '0.1em',
-                  borderRadius: 0,
-                }}
-              >
-                SUBMIT
-              </button>
-            </form>
-          </div>
         </div>
 
         {/* Bottom bar */}

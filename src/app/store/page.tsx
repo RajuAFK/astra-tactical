@@ -1,366 +1,874 @@
 'use client'
 
-import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { ShieldCheck, Package, Shirt, Radio } from 'lucide-react'
-import HUDFrame from '@/components/ui/HUDFrame'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Shield, Package, Shirt, Target,
+  ChevronRight, ArrowLeft, X, Check, Bell, LayoutGrid, ChevronLeft,
+} from 'lucide-react'
 import type { ElementType } from 'react'
+import { supabase } from '@/lib/supabase'
 
-type Category = 'ALL' | 'PROTECTION' | 'APPAREL' | 'ACCESSORIES' | 'AMMUNITION'
+// ─── Constants ────────────────────────────────────────────────────────────────
 
-interface Product {
-  name: string
-  category: Exclude<Category, 'ALL'>
-  Icon: ElementType
+const BG       = '#131313'
+const BG_HERO  = '#0A0A0A'
+const BG_SIDE  = '#161616'
+const BG_CARD  = '#1A1A1A'
+const BORDER   = 'rgba(255,255,255,0.07)'
+const ACCENT   = '#CFFF55'
+const MONO     = 'var(--font-space-mono)'
+const ORB      = 'var(--font-orbitron)'
+const RAJ      = 'var(--font-rajdhani)'
+
+const SIDE_FULL  = 280
+const SIDE_STRIP =  48
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type Product = { name: string; price: string; desc?: string; badge?: string }
+type PClass  = { label: string; abbr: string; products: Product[] }
+type Cat     = { label: string; code: string; accent: string; Icon: ElementType; desc: string; classes: Record<string, PClass> }
+
+// ─── Catalog ──────────────────────────────────────────────────────────────────
+
+const catalog: Record<string, Cat> = {
+  PROTECTION: {
+    label: 'Protection', code: 'PROT', accent: '#22C55E', Icon: Shield,
+    desc: 'Helmets · Vests · Eye Pro · Face Pro',
+    classes: {
+      HELMETS:  { label: 'Helmets & Head Protection', abbr: 'HLM', products: [
+        { name: 'FAST Helmet — MICH Style',     price: '₹2,800', badge: 'NEW',       desc: 'ABS construction. MOLLE-compatible rail.' },
+        { name: 'Bump Helmet — ABS',             price: '₹1,900',                    desc: 'Lightweight bump helmet with side rail.' },
+        { name: 'FAST Helmet — Carbon Fibre',    price: '₹3,400',                    desc: 'Carbon-pattern ABS. Accepts FAST accessories.' },
+      ]},
+      VESTS:    { label: 'Vests & Plate Carriers', abbr: 'VST', products: [
+        { name: 'JPC 2.0 Style Plate Carrier',  price: '₹4,200', badge: 'HOT',       desc: 'Lightweight. Accepts standard 10×12 plates.' },
+        { name: 'CPC Plate Carrier',             price: '₹3,600',                    desc: 'Full MOLLE coverage front and back.' },
+        { name: 'Micro Fight Chest Rig',         price: '₹2,100',                    desc: 'Minimal rig for speedsoft and CQB.' },
+      ]},
+      EYEPRO:   { label: 'Eye Protection', abbr: 'EYE', products: [
+        { name: 'Ballistic Eye Pro — Clear',     price: '₹1,200', badge: 'ESSENTIAL', desc: 'Anti-fog. Fits over glasses. ANSI Z87.1.' },
+        { name: 'Ballistic Eye Pro — Smoked',    price: '₹1,200',                    desc: 'Tinted lens. Same protection rating.' },
+        { name: 'Full Seal Goggles',             price: '₹1,600',                    desc: 'Full-seal foam gasket. No gaps.' },
+      ]},
+      FACEPRO:  { label: 'Face Protection', abbr: 'FCE', products: [
+        { name: 'Full Face Mesh Mask',           price: '₹950',                      desc: 'Wire mesh rated to 350 FPS.' },
+        { name: 'Lower Half Mesh Guard',         price: '₹580',                      desc: 'Pairs with goggles. Breathable.' },
+        { name: 'Skull Balaclava',               price: '₹780',  badge: 'NEW',       desc: 'Skull-print fabric. Pairs with full goggles.' },
+      ]},
+    },
+  },
+  APPAREL: {
+    label: 'Apparel', code: 'APRL', accent: '#3B82F6', Icon: Shirt,
+    desc: 'Combat Shirts · BDUs · Gloves',
+    classes: {
+      TOPS:    { label: 'Combat Shirts & Tops', abbr: 'TOP', products: [
+        { name: 'Combat Shirt — Multicam',       price: '₹1,800',                    desc: 'Ripstop. Elbow-pad sleeve compatible.' },
+        { name: 'Tactical T-Shirt — Black',      price: '₹890',                     desc: 'Cotton-poly blend. Reinforced shoulders.' },
+        { name: 'Longsleeve Shooter Shirt',      price: '₹1,400',                    desc: 'Grid-fleece panels. Moisture-wicking.' },
+      ]},
+      BOTTOMS: { label: 'Combat Trousers', abbr: 'BTM', products: [
+        { name: 'Tactical Combat Pants — OD',    price: '₹2,200',                    desc: 'Ripstop. Knee pad pockets. Double-stitched.' },
+        { name: 'BDU Trousers — Multicam',       price: '₹2,600', badge: 'HOT',      desc: 'Classic BDU cut. Full Multicam pattern.' },
+        { name: 'Lightweight Cargo Pants',       price: '₹1,800',                    desc: 'Breathable for warm-weather ops.' },
+      ]},
+      GLOVES:  { label: 'Gloves', abbr: 'GLV', products: [
+        { name: 'Full Finger Tactical Gloves',   price: '₹980',                     desc: 'Reinforced knuckles. Touchscreen compatible.' },
+        { name: 'Half Finger Shooters Gloves',   price: '₹780',                     desc: 'Better trigger feel. Padded palm.' },
+      ]},
+    },
+  },
+  ACCESSORIES: {
+    label: 'Accessories', code: 'ACCS', accent: '#F59E0B', Icon: Target,
+    desc: 'Optics · Slings · Holsters · Pouches',
+    classes: {
+      SLINGS:  { label: 'Slings & Holsters', abbr: 'SLG', products: [
+        { name: '2-Point Rifle Sling — Black',   price: '₹620',                     desc: 'Quick-adjust. Universal barrel fit.' },
+        { name: '1-Point QD Sling',              price: '₹780',                     desc: 'Single-point for CQB.' },
+        { name: 'Drop Leg Platform Holster',      price: '₹1,100',                   desc: 'Adjustable leg strap. MOLLE attachment.' },
+      ]},
+      POUCHES: { label: 'Pouches & Rigs', abbr: 'PCH', products: [
+        { name: 'M4 Double Mag Pouch',           price: '₹420',                     desc: 'Fits M4/M16 30-round mags.' },
+        { name: 'Admin Pouch — MOLLE',           price: '₹580',                     desc: 'Panel organiser with slots.' },
+        { name: 'Radio Pouch',                   price: '₹490',                     desc: 'Fits most handheld radios.' },
+        { name: 'Hydration Carrier',             price: '₹960',                     desc: '2 L bladder compatible.' },
+      ]},
+      OPTICS:  { label: 'Optics & Sights', abbr: 'OPT', products: [
+        { name: 'Red Dot Sight — 1×',            price: '₹1,600', badge: 'NEW',      desc: '21 mm Picatinny. 50,000 h battery life.' },
+        { name: 'Holographic Sight',             price: '₹2,200',                   desc: 'QD mount. Multiple reticle patterns.' },
+        { name: 'Magnifier 3× Swing Mount',      price: '₹3,800',                   desc: 'Swing-to-side for CQB transitions.' },
+      ]},
+    },
+  },
+  AMMUNITION: {
+    label: 'Ammunition', code: 'AMMO', accent: '#EF4444', Icon: Package,
+    desc: 'Standard · Bio · Tracer BBs',
+    classes: {
+      STANDARD: { label: 'Standard BBs',          abbr: 'STD', products: [
+        { name: '0.20g BBs — 5,000 pk',           price: '₹480',  badge: 'ESSENTIAL', desc: 'Seamless, polished. Ideal for CQB.' },
+        { name: '0.25g BBs — 3,000 pk',           price: '₹520',                     desc: 'Better trajectory on mid-range AEGs.' },
+        { name: '0.28g BBs — 2,500 pk',           price: '₹540',                     desc: 'Recommended for upgraded AEGs and DMRs.' },
+      ]},
+      BIO:      { label: 'Biodegradable BBs',      abbr: 'BIO', products: [
+        { name: 'Bio 0.20g — 3,000 pk',           price: '₹680',  badge: 'ECO',       desc: 'Fully biodegradable. Mandatory at most outdoor sites.' },
+        { name: 'Bio 0.25g — 2,500 pk',           price: '₹720',  badge: 'ECO',       desc: 'Certified. Match accuracy to standard BBs.' },
+      ]},
+      TRACER:   { label: 'Tracer BBs',             abbr: 'TRC', products: [
+        { name: 'Tracer 0.20g — 2,000 pk',        price: '₹880',  badge: 'NEW',       desc: 'Glow under UV from a tracer unit.' },
+        { name: 'Tracer 0.25g — 1,500 pk',        price: '₹920',                     desc: 'Heavier tracer for higher-FPS builds.' },
+      ]},
+    },
+  },
 }
 
-const allProducts: Product[] = [
-  { name: 'Tactical Vest', category: 'PROTECTION', Icon: ShieldCheck },
-  { name: 'Ballistic Eye Pro', category: 'PROTECTION', Icon: ShieldCheck },
-  { name: 'Knee Pads', category: 'PROTECTION', Icon: ShieldCheck },
-  { name: 'Full Face Mask', category: 'PROTECTION', Icon: ShieldCheck },
-  { name: '0.2g BBs 5000pk', category: 'AMMUNITION', Icon: Package },
-  { name: '0.25g BBs 3000pk', category: 'AMMUNITION', Icon: Package },
-  { name: 'Tactical Gloves', category: 'APPAREL', Icon: Shirt },
-  { name: 'Combat Pants', category: 'APPAREL', Icon: Shirt },
-  { name: 'Radio Pouch', category: 'ACCESSORIES', Icon: Radio },
-  { name: 'Holster', category: 'ACCESSORIES', Icon: Radio },
-  { name: 'Sling Mount', category: 'ACCESSORIES', Icon: Radio },
-  { name: 'Hydration Carrier', category: 'ACCESSORIES', Icon: Radio },
+// ─── Hero slides ──────────────────────────────────────────────────────────────
+
+const HERO_SLIDES = [
+  { tag: 'TACTICAL SUPPLY',    line1: 'GEAR UP.',        line2: 'GEAR RIGHT.',    sub: "India's first dedicated airsoft tactical supply platform.",        accent: ACCENT,    catKey: null            },
+  { tag: 'PROTECTION SERIES',  line1: 'PROTECT',         line2: 'YOUR OP.',       sub: 'Helmets, plate carriers, eye & face protection — field-ready.',    accent: '#22C55E', catKey: 'PROTECTION'    },
+  { tag: 'APPAREL LINE',       line1: 'DRESS',           line2: 'THE OP.',        sub: 'Combat shirts, BDUs and tactical gloves for every engagement.',     accent: '#3B82F6', catKey: 'APPAREL'       },
+  { tag: 'ACCESSORIES',        line1: 'KITTED',          line2: 'OUT.',           sub: 'Optics, slings, holsters and MOLLE pouches, fully spec\'d.',        accent: '#F59E0B', catKey: 'ACCESSORIES'   },
+  { tag: 'AMMUNITION',         line1: 'LOADED &',        line2: 'ACCURATE.',      sub: 'Standard, biodegradable and tracer BBs for every setup.',           accent: '#EF4444', catKey: 'AMMUNITION'    },
 ]
 
-const categories: Category[] = ['ALL', 'PROTECTION', 'APPAREL', 'ACCESSORIES', 'AMMUNITION']
+// ─── Marquee cards ────────────────────────────────────────────────────────────
 
-export default function StorePage() {
-  const [activeCategory, setActiveCategory] = useState<Category>('ALL')
-  const [modalOpen, setModalOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState('')
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+const MARQUEE_CARDS = [
+  { label: 'PROTECTION',   sub: 'Helmets · Vests · Eye Pro · Face Pro', accent: '#22C55E', catKey: 'PROTECTION'  },
+  { label: 'APPAREL',      sub: 'Combat Shirts · BDUs · Gloves',         accent: '#3B82F6', catKey: 'APPAREL'     },
+  { label: 'ACCESSORIES',  sub: 'Optics · Slings · Holsters · Pouches',  accent: '#F59E0B', catKey: 'ACCESSORIES' },
+  { label: 'AMMUNITION',   sub: 'Standard · Bio · Tracer BBs',           accent: '#EF4444', catKey: 'AMMUNITION'  },
+  { label: 'REPLICAS',     sub: 'Coming Q3 2026',                         accent: '#CFFF55', catKey: null          },
+  { label: 'UPGRADE PARTS',sub: 'Coming Q4 2026',                         accent: '#A855F7', catKey: null          },
+]
 
-  const filtered =
-    activeCategory === 'ALL'
-      ? allProducts
-      : allProducts.filter((p) => p.category === activeCategory)
+// ─── Animation variants ───────────────────────────────────────────────────────
 
-  const openModal = (productName: string) => {
-    setSelectedProduct(productName)
-    setSubmitted(false)
-    setEmail('')
-    setModalOpen(true)
-  }
+const BADGE_COL: Record<string, string> = { NEW:'#22C55E', HOT:'#EF4444', ESSENTIAL:'#3B82F6', ECO:'#22C55E' }
+const t025 = { duration: 0.25, ease: [0.32,0,0.67,0] as [number,number,number,number] }
+const t035 = { duration: 0.35, ease: [0.32,0,0.67,0] as [number,number,number,number] }
+const fromL = { opacity: 0, x: -16 }
+const fromR = { opacity: 0, x:  16 }
+const toC   = { opacity: 1, x:   0 }
+const outL  = { opacity: 0, x: -16 }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await supabase.from('registered_interest').insert({ email, product: selectedProduct })
-    setSubmitted(true)
-    setTimeout(() => setModalOpen(false), 2000)
-  }
+// ─────────────────────────────────────────────────────────────────────────────
+// Sub-components
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Hero Slider ───────────────────────────────────────────────────────────────
+
+function HeroSlider({ onCatSelect }: { onCatSelect: (key: string) => void }) {
+  const [idx, setIdx] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    if (paused) return
+    const t = setInterval(() => setIdx(i => (i + 1) % HERO_SLIDES.length), 4500)
+    return () => clearInterval(t)
+  }, [paused])
+
+  const slide = HERO_SLIDES[idx]
 
   return (
-    <>
-      {/* Hero */}
-      <section
-        className="grid-bg flex items-center justify-center"
-        style={{ minHeight: '40vh', paddingTop: '96px', background: '#080808' }}
-        aria-label="Store hero"
-      >
-        <HUDFrame label="TACTICAL SUPPLY" className="text-center">
-          <div className="py-4 px-8">
-            <h1
-              style={{
-                fontFamily: 'var(--font-orbitron)',
-                fontSize: 'clamp(24px, 5vw, 36px)',
-                color: '#ffffff',
-                marginBottom: '12px',
-              }}
-            >
-              GEAR UP. GEAR RIGHT.
-            </h1>
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '12px',
-                color: '#ffffff',
-              }}
-            >
-              Status: STORE OPENS Q3 2025
-            </p>
-          </div>
-        </HUDFrame>
-      </section>
+    <div
+      style={{ position: 'relative', height: '360px', overflow: 'hidden', background: BG_HERO, borderBottom: `1px solid ${BORDER}` }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Animated background */}
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.7 }}
+          style={{
+            position: 'absolute', inset: 0,
+            background: `radial-gradient(ellipse 70% 80% at 30% 50%, ${slide.accent}12 0%, transparent 70%)`,
+          }}
+        />
+      </AnimatePresence>
 
-      {/* Filter bar */}
-      <div
-        className="sticky top-16 z-40 flex gap-3 flex-wrap px-6 py-3 backdrop-blur-md"
-        style={{
-          background: 'rgba(10,10,10,0.95)',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-        }}
-        role="toolbar"
-        aria-label="Filter products by category"
-      >
-        {categories.map((cat) => (
+      {/* Subtle grid overlay */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.03,
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+        pointerEvents: 'none',
+      }} />
+
+      {/* Corner brackets */}
+      {[
+        { top:16, left:16,   borderTop:`2px solid ${slide.accent}55`, borderLeft:`2px solid ${slide.accent}55` },
+        { top:16, right:16,  borderTop:`2px solid ${slide.accent}55`, borderRight:`2px solid ${slide.accent}55` },
+        { bottom:16, left:16,  borderBottom:`2px solid ${slide.accent}22`, borderLeft:`2px solid ${slide.accent}22` },
+        { bottom:16, right:16, borderBottom:`2px solid ${slide.accent}22`, borderRight:`2px solid ${slide.accent}22` },
+      ].map((s, i) => (
+        <div key={i} style={{ position:'absolute', width:28, height:28, ...s }} />
+      ))}
+
+      {/* Slide content */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            padding: '0 48px',
+            maxWidth: '760px',
+          }}
+        >
+          <p style={{ fontFamily: MONO, fontSize: '10px', color: slide.accent, letterSpacing: '0.2em', opacity: 0.75, marginBottom: '16px' }}>
+            // {slide.tag}
+          </p>
+          <h1 style={{ fontFamily: ORB, fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, lineHeight: 0.92, color: '#fff', letterSpacing: '-0.02em', marginBottom: '20px' }}>
+            {slide.line1}<br /><span style={{ color: slide.accent }}>{slide.line2}</span>
+          </h1>
+          <p style={{ fontFamily: RAJ, fontSize: 'clamp(14px, 1.8vw, 18px)', color: 'rgba(255,255,255,0.5)', maxWidth: '480px', lineHeight: 1.6, marginBottom: '28px' }}>
+            {slide.sub}
+          </p>
+          {slide.catKey && (
+            <button
+              onClick={() => onCatSelect(slide.catKey!)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                padding: '10px 22px', background: `${slide.accent}18`,
+                border: `1px solid ${slide.accent}55`, borderRadius: '2px',
+                color: slide.accent, fontFamily: MONO, fontSize: '10px',
+                letterSpacing: '0.12em', cursor: 'pointer', width: 'fit-content',
+              }}
+            >
+              BROWSE {slide.tag.split(' ')[0]} <ChevronRight size={12} />
+            </button>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Slide counter + dots */}
+      <div style={{ position: 'absolute', bottom: 20, right: 24, display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <span style={{ fontFamily: MONO, fontSize: '9px', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.12em' }}>
+          {String(idx + 1).padStart(2,'0')} / {String(HERO_SLIDES.length).padStart(2,'0')}
+        </span>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {HERO_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              style={{
+                width: i === idx ? 20 : 6, height: 6, borderRadius: 3,
+                background: i === idx ? slide.accent : 'rgba(255,255,255,0.2)',
+                border: 'none', cursor: 'pointer', padding: 0,
+                transition: 'all 0.3s',
+              }}
+            />
+          ))}
+        </div>
+        {/* Prev / Next */}
+        <button onClick={() => setIdx(i => (i - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+          style={{ background:'none', border:`1px solid ${BORDER}`, color:'rgba(255,255,255,0.4)', cursor:'pointer', width:28, height:28, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:2 }}>
+          <ChevronLeft size={13} />
+        </button>
+        <button onClick={() => setIdx(i => (i + 1) % HERO_SLIDES.length)}
+          style={{ background:'none', border:`1px solid ${BORDER}`, color:'rgba(255,255,255,0.4)', cursor:'pointer', width:28, height:28, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:2 }}>
+          <ChevronRight size={13} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ── Marquee ───────────────────────────────────────────────────────────────────
+
+function HeroMarquee({ onCatSelect }: { onCatSelect: (key: string | null) => void }) {
+  const items = [...MARQUEE_CARDS, ...MARQUEE_CARDS, ...MARQUEE_CARDS]
+  return (
+    <div style={{ overflow:'hidden', background: BG_HERO, borderBottom:`1px solid ${BORDER}`, position:'relative' }}>
+      {(['left','right'] as const).map(side => (
+        <div key={side} style={{
+          position:'absolute', top:0, bottom:0, [side]:0, width:80,
+          background:`linear-gradient(to ${side==='left'?'right':'left'}, ${BG_HERO}, transparent)`,
+          zIndex:1, pointerEvents:'none',
+        }} />
+      ))}
+      <style>{`@keyframes store-ticker{from{transform:translateX(0)}to{transform:translateX(calc(-100%/3))}}`}</style>
+      <div style={{ display:'flex', gap:'10px', padding:'20px 10px', width:'fit-content', animation:'store-ticker 30s linear infinite' }}>
+        {items.map((c, i) => (
           <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            aria-label={`Filter by ${cat}`}
-            aria-pressed={activeCategory === cat}
+            key={i}
+            onClick={() => onCatSelect(c.catKey)}
+            disabled={!c.catKey}
             style={{
-              fontFamily: 'var(--font-space-mono)',
-              fontSize: '11px',
-              border: `1px solid ${activeCategory === cat ? '#ffffff' : 'rgba(255,255,255,0.1)'}`,
-              color: activeCategory === cat ? '#ffffff' : '#8A8A8A',
-              background: activeCategory === cat ? 'rgba(255,255,255,0.05)' : 'transparent',
-              padding: '4px 14px',
-              cursor: 'pointer',
-              letterSpacing: '0.1em',
-              borderRadius: 0,
-              transition: 'all 0.2s',
+              width:220, flexShrink:0,
+              border:`1px solid ${c.catKey ? c.accent+'30' : BORDER}`,
+              borderRadius:3, padding:'16px 16px',
+              background:`linear-gradient(135deg, ${c.accent}08 0%, transparent 70%)`,
+              cursor: c.catKey ? 'pointer' : 'not-allowed',
+              textAlign:'left', position:'relative', overflow:'hidden',
+              opacity: c.catKey ? 1 : 0.5,
+              transition:'border-color 0.2s, transform 0.15s',
             }}
+            onMouseEnter={e => { if (c.catKey) (e.currentTarget as HTMLButtonElement).style.borderColor = c.accent+'66' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = c.catKey ? c.accent+'30' : BORDER }}
           >
-            {cat}
+            <div style={{ position:'absolute', top:0, left:0, width:16, height:16, borderTop:`1px solid ${c.accent}`, borderLeft:`1px solid ${c.accent}` }} />
+            <p style={{ fontFamily:MONO, fontSize:'8px', color:c.accent, letterSpacing:'0.18em', opacity:0.65, marginBottom:'6px' }}>// CATEGORY</p>
+            <h3 style={{ fontFamily:ORB, fontSize:'12px', fontWeight:700, color:'#fff', letterSpacing:'0.06em', marginBottom:'6px' }}>{c.label}</h3>
+            <p style={{ fontFamily:MONO, fontSize:'8px', color:'rgba(255,255,255,0.35)', lineHeight:1.6 }}>{c.sub}</p>
+            <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'2px', background:`linear-gradient(to right, ${c.accent}44, transparent)` }} />
           </button>
         ))}
       </div>
+    </div>
+  )
+}
 
-      {/* Product grid */}
-      <div
-        style={{ background: '#0A0A0A', padding: '24px' }}
-        aria-label="Product grid"
-      >
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-          style={{ gap: '1px', maxWidth: '1400px', margin: '0 auto' }}
-        >
-          {filtered.map((product) => (
-            <div
-              key={product.name}
+// ── Category icon strip (48 px) ───────────────────────────────────────────────
+
+function CategoryStrip({ selectedCat, onSelect }: { selectedCat: string|null; onSelect: (key: string) => void }) {
+  const [tip, setTip] = useState<string|null>(null)
+  return (
+    <div style={{ width: SIDE_STRIP, display:'flex', flexDirection:'column', alignItems:'center', paddingTop:12 }}>
+      {Object.entries(catalog).map(([key, cat]) => {
+        const Icon = cat.Icon
+        const active = selectedCat === key
+        return (
+          <div key={key} style={{ position:'relative' }}
+            onMouseEnter={() => setTip(key)}
+            onMouseLeave={() => setTip(null)}
+          >
+            <motion.button
+              onClick={() => onSelect(key)}
+              animate={{ backgroundColor: active ? `${cat.accent}20` : 'rgba(0,0,0,0)', borderColor: active ? `${cat.accent}55` : 'transparent' }}
+              transition={{ duration: 0.15 }}
               style={{
-                background: '#111111',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 0,
+                width:36, height:36, margin:'3px 0',
+                display:'flex', alignItems:'center', justifyContent:'center',
+                border:'1px solid transparent', borderRadius:3, cursor:'pointer',
               }}
             >
-              {/* Image area */}
-              <div
-                style={{
-                  height: '200px',
-                  background: 'linear-gradient(135deg, #1a1a1a, #111)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                aria-hidden="true"
-              >
-                <product.Icon size={40} color="rgba(255,255,255,0.1)" />
-              </div>
+              <Icon size={15} color={active ? cat.accent : 'rgba(255,255,255,0.28)'} />
+            </motion.button>
+            {/* Tooltip */}
+            <AnimatePresence>
+              {tip === key && (
+                <motion.div
+                  initial={{ opacity:0, x:-4 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-4 }}
+                  transition={{ duration: 0.12 }}
+                  style={{
+                    position:'absolute', left:'calc(100% + 6px)', top:'50%', transform:'translateY(-50%)',
+                    background:'#222', border:`1px solid ${BORDER}`, padding:'4px 10px', borderRadius:2,
+                    fontFamily:MONO, fontSize:'9px', color:'#fff', whiteSpace:'nowrap', pointerEvents:'none', zIndex:20,
+                  }}
+                >
+                  {cat.label}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
-              {/* Content */}
-              <div style={{ padding: '16px' }}>
-                <div
+// ── Class icon strip (48 px) ──────────────────────────────────────────────────
+
+function ClassStrip({ catKey, selectedClass, onSelect }: { catKey: string; selectedClass: string|null; onSelect: (key: string) => void }) {
+  const cat = catalog[catKey]
+  const [tip, setTip] = useState<string|null>(null)
+  return (
+    <div style={{ width: SIDE_STRIP, display:'flex', flexDirection:'column', alignItems:'center', paddingTop:12 }}>
+      {/* Thin accent top bar */}
+      <div style={{ width:2, height:8, background: cat.accent, borderRadius:1, marginBottom:8, opacity:0.5 }} />
+      {Object.entries(cat.classes).map(([key, cls]) => {
+        const active = selectedClass === key
+        return (
+          <div key={key} style={{ position:'relative' }}
+            onMouseEnter={() => setTip(key)}
+            onMouseLeave={() => setTip(null)}
+          >
+            <motion.button
+              onClick={() => onSelect(key)}
+              animate={{ backgroundColor: active ? `${cat.accent}20` : 'rgba(0,0,0,0)', borderColor: active ? `${cat.accent}55` : 'transparent' }}
+              transition={{ duration: 0.15 }}
+              style={{
+                width:36, height:36, margin:'3px 0',
+                display:'flex', alignItems:'center', justifyContent:'center',
+                border:'1px solid transparent', borderRadius:3, cursor:'pointer', overflow:'hidden',
+              }}
+            >
+              <span style={{
+                fontFamily:MONO, fontSize:'7px', letterSpacing:'0.04em',
+                color: active ? cat.accent : 'rgba(255,255,255,0.28)',
+                writingMode:'vertical-rl', textOrientation:'mixed',
+                transform:'rotate(180deg)',
+              }}>
+                {cls.abbr}
+              </span>
+            </motion.button>
+            <AnimatePresence>
+              {tip === key && (
+                <motion.div
+                  initial={{ opacity:0, x:-4 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-4 }}
+                  transition={{ duration: 0.12 }}
                   style={{
-                    fontFamily: 'var(--font-space-mono)',
-                    fontSize: '9px',
-                    color: '#8A8A8A',
-                    letterSpacing: '0.15em',
+                    position:'absolute', left:'calc(100% + 6px)', top:'50%', transform:'translateY(-50%)',
+                    background:'#222', border:`1px solid ${BORDER}`, padding:'4px 10px', borderRadius:2,
+                    fontFamily:MONO, fontSize:'9px', color:'#fff', whiteSpace:'nowrap', pointerEvents:'none', zIndex:20,
                   }}
                 >
-                  {product.category}
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-orbitron)',
-                    fontSize: '13px',
-                    color: '#ffffff',
-                    marginTop: '4px',
-                  }}
-                >
-                  {product.name}
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-space-mono)',
-                    fontSize: '14px',
-                    color: '#ffffff',
-                    marginTop: '8px',
-                  }}
-                >
-                  ₹—,—
-                </div>
-                <button
-                  onClick={() => openModal(product.name)}
-                  aria-label={`Notify me when ${product.name} is available`}
-                  style={{
-                    width: '100%',
-                    fontFamily: 'var(--font-orbitron)',
-                    fontSize: '11px',
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    color: '#ffffff',
-                    background: 'transparent',
-                    padding: '8px',
-                    marginTop: '12px',
-                    cursor: 'pointer',
-                    letterSpacing: '0.1em',
-                    borderRadius: 0,
-                  }}
-                >
-                  NOTIFY ME
-                </button>
-              </div>
+                  {cls.label}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ── Full category sidebar ─────────────────────────────────────────────────────
+
+function CategorySidebar({ onSelect }: { onSelect: (key: string) => void }) {
+  const [hov, setHov] = useState<string|null>(null)
+  return (
+    <div style={{ width: SIDE_FULL }}>
+      <div style={{ padding:'24px 20px 16px', borderBottom:`1px solid ${BORDER}` }}>
+        <p style={{ fontFamily:MONO, fontSize:'9px', color:'rgba(255,255,255,0.3)', letterSpacing:'0.18em', marginBottom:8 }}>// BROWSE</p>
+        <h2 style={{ fontFamily:ORB, fontSize:'15px', fontWeight:700, color:'#fff', letterSpacing:'0.06em' }}>CATEGORIES</h2>
+      </div>
+      {Object.entries(catalog).map(([key, cat]) => {
+        const Icon = cat.Icon
+        const isH = hov === key
+        return (
+          <motion.button key={key} onClick={() => onSelect(key)}
+            onHoverStart={() => setHov(key)} onHoverEnd={() => setHov(null)}
+            animate={{ backgroundColor: isH ? `${cat.accent}0E` : 'rgba(0,0,0,0)' }} transition={{ duration:0.15 }}
+            style={{ display:'flex', alignItems:'center', gap:14, width:'100%', padding:'15px 20px',
+              border:'none', borderBottom:`1px solid ${BORDER}`, borderLeft:`2px solid ${isH ? cat.accent : 'transparent'}`,
+              cursor:'pointer', textAlign:'left', color:'#fff', transition:'border-color 0.15s' }}
+          >
+            <div style={{ width:34, height:34, flexShrink:0, borderRadius:3, background:`${cat.accent}18`, border:`1px solid ${cat.accent}30`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <Icon size={15} color={cat.accent} />
             </div>
-          ))}
-        </div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontFamily:ORB, fontSize:'11px', fontWeight:700, letterSpacing:'0.08em', marginBottom:3 }}>{cat.label.toUpperCase()}</div>
+              <div style={{ fontFamily:MONO, fontSize:'9px', color:'rgba(255,255,255,0.38)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{cat.desc}</div>
+            </div>
+            <ChevronRight size={13} color={isH ? cat.accent : 'rgba(255,255,255,0.18)'} style={{ flexShrink:0 }} />
+          </motion.button>
+        )
+      })}
+    </div>
+  )
+}
 
-        {/* Below grid CTA */}
-        <div className="text-center" style={{ padding: '48px 24px' }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-rajdhani)',
-              fontSize: '18px',
-              color: '#ffffff',
-              marginBottom: '24px',
-            }}
+// ── Full class sidebar ────────────────────────────────────────────────────────
+
+function ClassSidebar({ catKey, onSelect, onBack }: { catKey:string; onSelect:(key:string)=>void; onBack:()=>void }) {
+  const cat = catalog[catKey]
+  const [hov, setHov] = useState<string|null>(null)
+  return (
+    <div style={{ width: SIDE_FULL }}>
+      <div style={{ padding:'20px 20px 16px', borderBottom:`1px solid ${BORDER}` }}>
+        <button onClick={onBack} style={{ display:'flex', alignItems:'center', gap:6, background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', padding:0, marginBottom:12, fontFamily:MONO, fontSize:'9px', letterSpacing:'0.12em' }}>
+          <ArrowLeft size={11} /> ALL CATEGORIES
+        </button>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <div style={{ width:8, height:8, borderRadius:'50%', background:cat.accent, flexShrink:0 }} />
+          <h2 style={{ fontFamily:ORB, fontSize:'14px', fontWeight:700, color:'#fff', letterSpacing:'0.06em' }}>{cat.label.toUpperCase()}</h2>
+        </div>
+      </div>
+      <p style={{ padding:'14px 20px 6px', fontFamily:MONO, fontSize:'9px', color:'rgba(255,255,255,0.3)', letterSpacing:'0.15em' }}>// SELECT CLASS</p>
+      {Object.entries(cat.classes).map(([key, cls]) => {
+        const isH = hov === key
+        return (
+          <motion.button key={key} onClick={() => onSelect(key)}
+            onHoverStart={() => setHov(key)} onHoverEnd={() => setHov(null)}
+            animate={{ backgroundColor: isH ? `${cat.accent}0E` : 'rgba(0,0,0,0)' }} transition={{ duration:0.15 }}
+            style={{ display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%', padding:'14px 20px',
+              border:'none', borderBottom:`1px solid ${BORDER}`, borderLeft:`2px solid ${isH ? cat.accent : 'transparent'}`,
+              cursor:'pointer', color:'#fff', transition:'border-color 0.15s' }}
           >
-            Want to be notified when we go live?
-          </p>
-          <button
-            onClick={() => openModal('Astra Tactical Store')}
-            aria-label="Notify me when the store goes live"
-            style={{
-              fontFamily: 'var(--font-orbitron)',
-              fontSize: '13px',
-              border: '1px solid rgba(255,255,255,0.4)',
-              color: '#ffffff',
-              padding: '14px 32px',
-              background: 'transparent',
-              cursor: 'pointer',
-              letterSpacing: '0.1em',
-              borderRadius: 0,
-            }}
-          >
-            NOTIFY ME WHEN WE GO LIVE
+            <div style={{ textAlign:'left' }}>
+              <div style={{ fontFamily:RAJ, fontSize:'14px', fontWeight:600, letterSpacing:'0.03em', marginBottom:3 }}>{cls.label}</div>
+              <div style={{ fontFamily:MONO, fontSize:'9px', color:'rgba(255,255,255,0.32)' }}>{cls.products.length} ITEMS</div>
+            </div>
+            <ChevronRight size={13} color={isH ? cat.accent : 'rgba(255,255,255,0.18)'} style={{ flexShrink:0 }} />
+          </motion.button>
+        )
+      })}
+    </div>
+  )
+}
+
+// ── Product card ──────────────────────────────────────────────────────────────
+
+function ProductCard({ product, accent, Icon, onNotify }: { product:Product; accent:string; Icon:ElementType; onNotify:(n:string)=>void }) {
+  const [hov, setHov] = useState(false)
+  const bc = product.badge ? (BADGE_COL[product.badge] ?? accent) : accent
+  return (
+    <motion.div
+      onHoverStart={() => setHov(true)} onHoverEnd={() => setHov(false)}
+      animate={{ borderColor: hov ? `${accent}55` : BORDER }}
+      transition={{ duration: 0.2 }}
+      style={{ border:`1px solid ${BORDER}`, borderRadius:3, overflow:'hidden', display:'flex', flexDirection:'column', height:360, background: BG_CARD }}
+    >
+      {/* ── Image placeholder ─────────────────────── */}
+      <div style={{ height:160, flexShrink:0, position:'relative', overflow:'hidden', background:'linear-gradient(150deg, #131313 0%, #1A1A1A 100%)' }}>
+        {/* Dot-grid texture */}
+        <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize:'18px 18px' }} />
+        {/* Accent radial glow */}
+        <div style={{ position:'absolute', inset:0, background:`radial-gradient(ellipse 90% 90% at 15% 20%, ${accent}0E, transparent)` }} />
+        {/* Corner brackets */}
+        <div style={{ position:'absolute', top:10, left:10, width:14, height:14, borderTop:`1px solid ${accent}55`, borderLeft:`1px solid ${accent}55` }} />
+        <div style={{ position:'absolute', bottom:10, right:10, width:14, height:14, borderBottom:`1px solid ${accent}25`, borderRight:`1px solid ${accent}25` }} />
+        {/* Centred category icon watermark */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ opacity:0.1 }}><Icon size={52} color={accent} /></div>
+        </div>
+        {/* Badge — top-right overlay */}
+        {product.badge && (
+          <div style={{ position:'absolute', top:10, right:10, padding:'2px 8px', background:`${bc}22`, border:`1px solid ${bc}44`, borderRadius:2, fontFamily:MONO, fontSize:'8px', color:bc, letterSpacing:'0.1em' }}>
+            {product.badge}
+          </div>
+        )}
+        {/* Bottom label */}
+        <p style={{ position:'absolute', bottom:8, left:12, fontFamily:MONO, fontSize:'8px', color:'rgba(255,255,255,0.13)', letterSpacing:'0.1em', margin:0 }}>// IMG PENDING</p>
+        {/* Hover top accent sweep */}
+        <motion.div animate={{ opacity:hov?1:0, scaleX:hov?1:0 }} transition={{ duration:0.2 }}
+          style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(to right, ${accent}, transparent)`, transformOrigin:'left' }} />
+      </div>
+
+      {/* ── Content ───────────────────────────────── */}
+      <div style={{ flex:1, padding:'14px 16px', display:'flex', flexDirection:'column' }}>
+        <h3 style={{
+          fontFamily:RAJ, fontSize:'15px', fontWeight:600, color:'#fff', lineHeight:1.3, marginBottom:6,
+          display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden',
+        } as React.CSSProperties}>
+          {product.name}
+        </h3>
+        <p style={{
+          fontFamily:MONO, fontSize:'9px', color:'rgba(255,255,255,0.35)', lineHeight:1.7, flex:1,
+          display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden',
+        } as React.CSSProperties}>
+          {product.desc ?? ''}
+        </p>
+        {/* Footer */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:12, borderTop:`1px solid ${BORDER}`, marginTop:'auto' }}>
+          <span style={{ fontFamily:ORB, fontSize:'15px', fontWeight:700, color:accent }}>{product.price}</span>
+          <button onClick={() => onNotify(product.name)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 11px', background:`${accent}14`, border:`1px solid ${accent}3A`, borderRadius:2, color:accent, fontFamily:MONO, fontSize:'8px', letterSpacing:'0.1em', cursor:'pointer' }}>
+            <Bell size={10} /> NOTIFY ME
           </button>
         </div>
       </div>
+    </motion.div>
+  )
+}
 
-      {/* Modal */}
-      {modalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: 'rgba(0,0,0,0.85)' }}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Notify me form for ${selectedProduct}`}
-        >
-          <div
-            style={{
-              maxWidth: '400px',
-              width: '90%',
-              background: '#111111',
-              border: '1px solid rgba(255,255,255,0.3)',
-              padding: '32px',
-              position: 'relative',
-            }}
-          >
-            <button
-              onClick={() => setModalOpen(false)}
-              aria-label="Close modal"
-              style={{
-                position: 'absolute',
-                top: '12px',
-                right: '12px',
-                color: '#8A8A8A',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '18px',
-                fontFamily: 'var(--font-space-mono)',
-              }}
-            >
-              ✕
-            </button>
-            <HUDFrame label="NOTIFY ME">
-              {submitted ? (
-                <p
-                  style={{
-                    fontFamily: 'var(--font-space-mono)',
-                    fontSize: '12px',
-                    color: '#ffffff',
-                    padding: '16px 0',
-                  }}
-                >
-                  REGISTERED. WE&apos;LL BRIEF YOU SOON.
-                </p>
-              ) : (
-                <form onSubmit={handleSubmit} aria-label="Store notification form">
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-orbitron)',
-                      fontSize: '14px',
-                      color: '#ffffff',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    REGISTER INTEREST
-                  </div>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-rajdhani)',
-                      fontSize: '14px',
-                      color: '#8A8A8A',
-                      marginBottom: '16px',
-                    }}
-                  >
-                    Be first when {selectedProduct} drops.
-                  </p>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    required
-                    aria-label="Your email address"
-                    style={{
-                      width: '100%',
-                      background: 'transparent',
-                      borderTop: 'none',
-                      borderLeft: 'none',
-                      borderRight: 'none',
-                      borderBottom: '1px solid rgba(255,255,255,0.3)',
-                      color: '#ffffff',
-                      fontFamily: 'var(--font-rajdhani)',
-                      fontSize: '14px',
-                      outline: 'none',
-                      padding: '8px 0',
-                      marginBottom: '16px',
-                      boxSizing: 'border-box',
-                    }}
-                  />
-                  <button
-                    type="submit"
-                    aria-label="Submit store interest notification"
-                    style={{
-                      width: '100%',
-                      background: '#ffffff',
-                      color: '#ffffff',
-                      fontFamily: 'var(--font-orbitron)',
-                      fontSize: '12px',
-                      padding: '12px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      letterSpacing: '0.1em',
-                      borderRadius: 0,
-                    }}
-                  >
-                    SUBMIT
-                  </button>
-                </form>
-              )}
-            </HUDFrame>
-          </div>
+// ── Product grid ──────────────────────────────────────────────────────────────
+
+function ProductGrid({ catKey, classKey, onBackToClasses, onBackToCategories, onNotify }: {
+  catKey:string; classKey:string; onBackToClasses:()=>void; onBackToCategories:()=>void; onNotify:(n:string)=>void
+}) {
+  const cat = catalog[catKey]
+  const cls = cat.classes[classKey]
+  return (
+    <div style={{ padding:'28px 32px' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:24, flexWrap:'wrap' }}>
+        {[{label:'ALL', action:onBackToCategories},{label:cat.label.toUpperCase(), action:onBackToClasses}].map(({label,action},i)=>(
+          <span key={i} style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <button onClick={action} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.32)', cursor:'pointer', fontFamily:MONO, fontSize:'9px', letterSpacing:'0.12em', padding:0 }}>{label}</button>
+            <span style={{ color:'rgba(255,255,255,0.15)', fontFamily:MONO, fontSize:'10px' }}>›</span>
+          </span>
+        ))}
+        <span style={{ fontFamily:MONO, fontSize:'9px', color:cat.accent, letterSpacing:'0.12em' }}>{cls.label.toUpperCase()}</span>
+      </div>
+      <div style={{ marginBottom:24, borderBottom:`1px solid ${BORDER}`, paddingBottom:18 }}>
+        <p style={{ fontFamily:MONO, fontSize:'9px', color:cat.accent, letterSpacing:'0.18em', opacity:0.7, marginBottom:8 }}>// {catKey} · {classKey}</p>
+        <h2 style={{ fontFamily:ORB, fontSize:'22px', fontWeight:700, color:'#fff' }}>{cls.label}</h2>
+      </div>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(220px, 1fr))', gap:14 }}>
+        {cls.products.map((p,i) => (
+          <motion.div key={p.name} initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.07, duration:0.3, ease:'easeOut' }}>
+            <ProductCard product={p} accent={cat.accent} Icon={cat.Icon} onNotify={onNotify} />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── Browse prompt ─────────────────────────────────────────────────────────────
+
+function BrowsePrompt({ drillDown, catKey }: { drillDown:0|1|2; catKey:string|null }) {
+  return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:360, gap:14 }}>
+      <div style={{ width:52, height:52, border:`1px solid ${BORDER}`, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <ChevronRight size={18} color="rgba(255,255,255,0.15)" />
+      </div>
+      <p style={{ fontFamily:MONO, fontSize:'10px', color:'rgba(255,255,255,0.22)', letterSpacing:'0.15em' }}>
+        {(drillDown===0 ? 'SELECT A CATEGORY TO BEGIN' : `SELECT A CLASS WITHIN ${catKey ? catalog[catKey].label.toUpperCase() : ''}`)}
+      </p>
+    </div>
+  )
+}
+
+// ── Notify modal ──────────────────────────────────────────────────────────────
+
+function NotifyModal({ product, email, submitted, onEmail, onSubmit, onClose }: {
+  product:string; email:string; submitted:boolean; onEmail:(v:string)=>void; onSubmit:(e:React.FormEvent)=>void; onClose:()=>void
+}) {
+  return (
+    <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+      style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.82)', backdropFilter:'blur(6px)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000 }}
+      onClick={onClose}
+    >
+      <motion.div initial={{ scale:0.93, y:16 }} animate={{ scale:1, y:0 }} exit={{ scale:0.93, y:16 }} transition={t025}
+        onClick={e=>e.stopPropagation()}
+        style={{ background:'#1C1C1C', border:`1px solid ${BORDER}`, borderTop:`2px solid ${ACCENT}`, borderRadius:4, padding:32, width:400, maxWidth:'90vw', position:'relative' }}
+      >
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'rgba(255,255,255,0.35)', cursor:'pointer' }}><X size={17} /></button>
+        <p style={{ fontFamily:MONO, fontSize:'9px', color:ACCENT, letterSpacing:'0.18em', marginBottom:8 }}>// AVAILABILITY ALERT</p>
+        <h3 style={{ fontFamily:ORB, fontSize:'18px', fontWeight:700, color:'#fff', marginBottom:6 }}>NOTIFY ME</h3>
+        <p style={{ fontFamily:RAJ, fontSize:'14px', color:'rgba(255,255,255,0.45)', marginBottom:24, lineHeight:1.5 }}>
+          Get briefed when <span style={{ color:'#fff' }}>{product}</span> is available.
+        </p>
+        <AnimatePresence mode="wait">
+          {submitted ? (
+            <motion.div key="done" initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} style={{ display:'flex', alignItems:'center', gap:10, color:'#22C55E', fontFamily:MONO, fontSize:'12px', letterSpacing:'0.1em' }}>
+              <Check size={16} /> YOU&apos;RE ON THE LIST
+            </motion.div>
+          ) : (
+            <motion.form key="form" initial={{ opacity:0 }} animate={{ opacity:1 }} onSubmit={onSubmit} style={{ display:'flex', gap:8 }}>
+              <input type="email" required value={email} onChange={e=>onEmail(e.target.value)} placeholder="your@email.com"
+                style={{ flex:1, background:'#111', border:`1px solid rgba(255,255,255,0.14)`, borderRadius:2, padding:'10px 14px', color:'#fff', fontFamily:MONO, fontSize:'12px', outline:'none' }} />
+              <button type="submit" style={{ padding:'10px 20px', background:ACCENT, border:'none', borderRadius:2, color:'#000', fontFamily:MONO, fontSize:'10px', fontWeight:700, letterSpacing:'0.1em', cursor:'pointer', flexShrink:0 }}>
+                ALERT ME
+              </button>
+            </motion.form>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// ── Mobile menu drawer ────────────────────────────────────────────────────────
+
+function MobileMenu({ onClose, onClassSelect }: { onClose:()=>void; onClassSelect:(cat:string, cls:string)=>void }) {
+  const [mobDrill, setMobDrill] = useState<0|1>(0)
+  const [mobCat, setMobCat] = useState<string|null>(null)
+  return (
+    <>
+      {/* Backdrop */}
+      <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+        style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', zIndex:998 }}
+        onClick={onClose}
+      />
+      {/* Drawer */}
+      <motion.div initial={{ y:'100%' }} animate={{ y:0 }} exit={{ y:'100%' }}
+        transition={{ type:'spring', damping:32, stiffness:320 }}
+        style={{ position:'fixed', bottom:0, left:0, right:0, height:'72vh', background:BG_SIDE, zIndex:999,
+          borderRadius:'16px 16px 0 0', borderTop:`2px solid ${mobCat ? catalog[mobCat].accent : ACCENT}`, overflow:'hidden', display:'flex', flexDirection:'column' }}
+      >
+        {/* Handle */}
+        <div style={{ display:'flex', justifyContent:'center', padding:12 }}>
+          <div style={{ width:36, height:4, background:'rgba(255,255,255,0.18)', borderRadius:2 }} />
         </div>
-      )}
+        {/* Close */}
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:16, background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer' }}>
+          <X size={18} />
+        </button>
+
+        <div style={{ flex:1, overflowY:'auto' }}>
+          <AnimatePresence mode="wait">
+            {mobDrill === 0 ? (
+              <motion.div key="mob-cats" initial={fromL} animate={toC} exit={outL} transition={t025}>
+                <CategorySidebar onSelect={key => { setMobCat(key); setMobDrill(1) }} />
+              </motion.div>
+            ) : (
+              <motion.div key="mob-cls" initial={fromR} animate={toC} exit={outL} transition={t025}>
+                <ClassSidebar
+                  catKey={mobCat!}
+                  onSelect={key => { onClassSelect(mobCat!, key); onClose() }}
+                  onBack={() => setMobDrill(0)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main page
+// ─────────────────────────────────────────────────────────────────────────────
+
+export default function StorePage() {
+  const [drillDown,    setDrillDown]    = useState<0|1|2>(0)
+  const [selectedCat,  setSelectedCat]  = useState<string|null>(null)
+  const [selectedClass,setSelectedClass]= useState<string|null>(null)
+  const [mobileOpen,   setMobileOpen]   = useState(false)
+  const [notifyProduct,setNotifyProduct]= useState<string|null>(null)
+  const [email,        setEmail]        = useState('')
+  const [submitted,    setSubmitted]    = useState(false)
+
+  const pickCategory = (key: string) => { setSelectedCat(key); setSelectedClass(null); setDrillDown(1) }
+  const pickClass    = (key: string) => { setSelectedClass(key); setDrillDown(2) }
+  const backToCats   = ()            => { setDrillDown(0); setSelectedCat(null); setSelectedClass(null) }
+  const backToCls    = ()            => { setDrillDown(1); setSelectedClass(null) }
+
+  const mobileClassSelect = (cat: string, cls: string) => {
+    setSelectedCat(cat); setSelectedClass(cls); setDrillDown(2)
+  }
+
+  const handleNotify = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await supabase.from('astra_registered_interest').insert({ email, interest_type: 'product_notify', product: notifyProduct })
+    setSubmitted(true)
+    setTimeout(() => { setNotifyProduct(null); setSubmitted(false); setEmail('') }, 2500)
+  }
+
+  // Marquee / hero CTA click
+  const handleMarqueeClick = (catKey: string | null) => {
+    if (!catKey) return
+    pickCategory(catKey)
+    // scroll past hero on mobile
+    if (typeof window !== 'undefined' && window.innerWidth < 768) setMobileOpen(true)
+  }
+
+  return (
+    <div style={{ background:BG, minHeight:'100vh', paddingTop:'88px', color:'#fff' }}>
+
+      {/* ── HERO SLIDER ────────────────────────────────────────────────────── */}
+      <HeroSlider onCatSelect={handleMarqueeClick} />
+
+      {/* ── MARQUEE ────────────────────────────────────────────────────────── */}
+      <HeroMarquee onCatSelect={handleMarqueeClick} />
+
+      {/* ── STORE BODY ─────────────────────────────────────────────────────── */}
+      <div style={{ display:'flex', minHeight:'calc(100vh - 540px)' }}>
+
+        {/* ══ DESKTOP SIDEBARS (hidden on mobile) ═══════════════════════════ */}
+
+        {/* Category column: full ↔ strip */}
+        <motion.aside
+          className="hidden md:block"
+          animate={{ width: drillDown === 0 ? SIDE_FULL : SIDE_STRIP }}
+          transition={t035}
+          style={{ flexShrink:0, overflow:'hidden', background:BG_SIDE, borderRight:`1px solid ${BORDER}`,
+            position:'sticky', top:88, alignSelf:'flex-start', height:'calc(100vh - 88px)', overflowY:'auto' }}
+        >
+          <AnimatePresence mode="wait">
+            {drillDown === 0 ? (
+              <motion.div key="cat-full" initial={fromL} animate={toC} exit={outL} transition={t025} style={{ width:SIDE_FULL }}>
+                <CategorySidebar onSelect={pickCategory} />
+              </motion.div>
+            ) : (
+              <motion.div key="cat-strip" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={t025} style={{ width:SIDE_STRIP }}>
+                <CategoryStrip selectedCat={selectedCat} onSelect={pickCategory} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.aside>
+
+        {/* Class column: appears when drillDown ≥ 1; full ↔ strip */}
+        <AnimatePresence>
+          {drillDown >= 1 && selectedCat && (
+            <motion.aside
+              key="class-col"
+              className="hidden md:block"
+              initial={{ width: 0 }}
+              animate={{ width: drillDown === 1 ? SIDE_FULL : SIDE_STRIP }}
+              exit={{ width: 0 }}
+              transition={t035}
+              style={{ flexShrink:0, overflow:'hidden', background:BG_SIDE, borderRight:`1px solid ${BORDER}`,
+                position:'sticky', top:88, alignSelf:'flex-start', height:'calc(100vh - 88px)', overflowY:'auto' }}
+            >
+              <AnimatePresence mode="wait">
+                {drillDown === 1 ? (
+                  <motion.div key="cls-full" initial={fromR} animate={toC} exit={outL} transition={t025} style={{ width:SIDE_FULL }}>
+                    <ClassSidebar catKey={selectedCat} onSelect={pickClass} onBack={backToCats} />
+                  </motion.div>
+                ) : (
+                  <motion.div key="cls-strip" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={t025} style={{ width:SIDE_STRIP }}>
+                    <ClassStrip catKey={selectedCat} selectedClass={selectedClass} onSelect={(key) => { setSelectedClass(key) }} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+
+        {/* ── Content area ─────────────────────────────────────────────────── */}
+        <div style={{ flex:1, minWidth:0 }}>
+          <AnimatePresence mode="wait">
+            {drillDown === 2 && selectedCat && selectedClass ? (
+              <motion.div key={`products-${selectedCat}-${selectedClass}`}
+                initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
+                <ProductGrid
+                  catKey={selectedCat} classKey={selectedClass}
+                  onBackToClasses={backToCls} onBackToCategories={backToCats}
+                  onNotify={setNotifyProduct}
+                />
+              </motion.div>
+            ) : (
+              <motion.div key="browse" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.25 }}>
+                <BrowsePrompt drillDown={drillDown} catKey={selectedCat} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* ══ MOBILE: floating browse button ═══════════════════════════════════ */}
+      <div className="md:hidden" style={{ position:'fixed', bottom:24, right:20, zIndex:40 }}>
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setMobileOpen(true)}
+          style={{
+            display:'flex', alignItems:'center', gap:8,
+            padding:'11px 20px', background:'#1E1E1E',
+            border:`1px solid ${selectedCat ? catalog[selectedCat].accent+'55' : BORDER}`,
+            borderRadius:32, color:'#fff', fontFamily:MONO, fontSize:'10px',
+            letterSpacing:'0.12em', cursor:'pointer',
+            boxShadow:'0 4px 24px rgba(0,0,0,0.7)',
+          }}
+        >
+          <LayoutGrid size={13} color={selectedCat ? catalog[selectedCat].accent : ACCENT} />
+          {drillDown > 0 && selectedCat ? catalog[selectedCat].label.toUpperCase() : 'BROWSE'}
+        </motion.button>
+      </div>
+
+      {/* ══ MOBILE MENU DRAWER ═══════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <div className="md:hidden">
+            <MobileMenu onClose={() => setMobileOpen(false)} onClassSelect={mobileClassSelect} />
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── NOTIFY MODAL ─────────────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {notifyProduct && (
+          <NotifyModal product={notifyProduct} email={email} submitted={submitted}
+            onEmail={setEmail} onSubmit={handleNotify}
+            onClose={() => { setNotifyProduct(null); setSubmitted(false); setEmail('') }}
+          />
+        )}
+      </AnimatePresence>
+    </div>
   )
 }

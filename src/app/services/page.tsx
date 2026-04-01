@@ -238,22 +238,16 @@ export default function ServicesPage() {
           <p style={{ fontFamily: 'var(--font-rajdhani)', fontSize: '18px', color: 'rgba(255,255,255,0.6)', maxWidth: '520px', lineHeight: 1.65 }}>
             Get the full stack — replicas, venue software, and player app — under one franchise agreement. We handle the infrastructure. You run the field.
           </p>
-          <a
-            href="/#about"
-            style={{
-              fontFamily: 'var(--font-orbitron)',
-              fontSize: '12px',
-              letterSpacing: '0.15em',
-              color: '#080808',
-              background: PURPLE,
-              padding: '16px 40px',
-              display: 'inline-block',
-              textDecoration: 'none',
-              marginTop: '8px',
-            }}
-          >
-            REGISTER INTEREST
-          </a>
+          <p style={{
+            fontFamily: 'var(--font-space-mono)',
+            fontSize: '11px',
+            color: PURPLE,
+            opacity: 0.75,
+            letterSpacing: '0.15em',
+            marginTop: '8px',
+          }}>
+            USE THE REGISTER INTEREST BUTTON ABOVE ↑
+          </p>
         </div>
       </section>
 
