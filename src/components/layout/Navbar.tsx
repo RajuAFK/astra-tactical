@@ -508,93 +508,147 @@ export default function Navbar() {
           </Link>
 
           <button
-            className="flex flex-col gap-1 p-2"
-            onClick={() => setMobileOpen(true)}
-            aria-label="Open mobile menu"
+            className="p-2"
+            onClick={() => setMobileOpen(o => !o)}
+            aria-label={mobileOpen ? 'Close mobile menu' : 'Open mobile menu'}
+            aria-expanded={mobileOpen}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', width: 32, height: 28 }}
           >
-            <span className="block w-5 h-0.5 bg-white" />
-            <span className="block w-5 h-0.5 bg-white" />
-            <span className="block w-5 h-0.5 bg-white" />
+            <motion.span
+              animate={mobileOpen ? { rotate: 45, y: 9 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              style={{ position: 'absolute', top: 4, left: 4, right: 4, height: 2, background: '#fff', borderRadius: 1, transformOrigin: 'center' }}
+            />
+            <motion.span
+              animate={mobileOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.18 }}
+              style={{ position: 'absolute', top: 13, left: 4, right: 4, height: 2, background: '#fff', borderRadius: 1 }}
+            />
+            <motion.span
+              animate={mobileOpen ? { rotate: -45, y: -9 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              style={{ position: 'absolute', bottom: 4, left: 4, right: 4, height: 2, background: '#fff', borderRadius: 1, transformOrigin: 'center' }}
+            />
           </button>
         </div>
       </nav>
 
       {/* Mobile overlay nav */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
-          style={{ background: '#0A0A0A' }}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Mobile navigation menu"
-        >
-          <button
-            className="absolute top-6 right-6 text-2xl"
-            style={{ color: '#8A8A8A', fontFamily: 'var(--font-space-mono)' }}
-            onClick={() => setMobileOpen(false)}
-            aria-label="Close mobile menu"
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            key="mobile-nav"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
+            style={{ background: '#0A0A0A' }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
           >
-            ✕
-          </button>
+            {/* Subtle accent line top */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              exit={{ scaleX: 0 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(to right, transparent, ${ACCENT}, transparent)`, transformOrigin: 'left' }}
+            />
 
-          <nav className="flex flex-col items-center gap-7">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                style={{
-                  fontFamily: 'var(--font-orbitron)',
-                  fontSize: '22px',
-                  color: '#ffffff',
-                  letterSpacing: '0.15em',
-                  textDecoration: 'none',
-                }}
-                onClick={() => setMobileOpen(false)}
-                aria-label={`Navigate to ${link.label}`}
+            <nav className="flex flex-col items-center gap-7">
+              {navLinks.map((link, i) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ delay: i * 0.06 + 0.08, duration: 0.28, ease: 'easeOut' }}
+                >
+                  <Link
+                    href={link.href}
+                    style={{
+                      fontFamily: 'var(--font-orbitron)',
+                      fontSize: '22px',
+                      color: '#ffffff',
+                      letterSpacing: '0.15em',
+                      textDecoration: 'none',
+                      display: 'block',
+                      transition: 'color 0.2s',
+                    }}
+                    className="hover:text-[#CFFF55]"
+                    onClick={() => setMobileOpen(false)}
+                    aria-label={`Navigate to ${link.label}`}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ))}
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: navLinks.length * 0.06 + 0.08 }}
+                style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.12)', margin: '4px 0' }}
+                aria-hidden="true"
+              />
+
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ delay: navLinks.length * 0.06 + 0.14, duration: 0.28 }}
               >
-                {link.label}
-              </Link>
-            ))}
+                <Link
+                  href="/mission-control"
+                  style={{
+                    fontFamily: 'var(--font-barlow-condensed)',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    letterSpacing: '0.15em',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                    padding: '10px 28px',
+                    textDecoration: 'none',
+                    display: 'block',
+                    transition: 'border-color 0.2s',
+                  }}
+                  className="hover:border-white"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  MISSION CONTROL
+                </Link>
+              </motion.div>
 
-            <div style={{ width: '1px', height: '1px', margin: '8px 0', background: 'rgba(255,255,255,0.1)' }} aria-hidden="true" />
-
-            <Link
-              href="/mission-control"
-              style={{
-                fontFamily: 'var(--font-barlow-condensed)',
-                fontSize: '14px',
-                fontWeight: 600,
-                letterSpacing: '0.15em',
-                color: '#ffffff',
-                border: '1px solid rgba(255,255,255,0.25)',
-                padding: '10px 28px',
-                textDecoration: 'none',
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              MISSION CONTROL
-            </Link>
-
-            {/* Register Interest — opens bottom sheet */}
-            <button
-              onClick={openRegister}
-              style={{
-                fontFamily: 'var(--font-barlow-condensed)',
-                fontSize: '14px',
-                fontWeight: 600,
-                letterSpacing: '0.15em',
-                color: '#080808',
-                background: ACCENT,
-                padding: '10px 28px',
-                border: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              REGISTER INTEREST
-            </button>
-          </nav>
-        </div>
-      )}
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ delay: navLinks.length * 0.06 + 0.2, duration: 0.28 }}
+              >
+                <motion.button
+                  onClick={openRegister}
+                  whileTap={{ scale: 0.96 }}
+                  style={{
+                    fontFamily: 'var(--font-barlow-condensed)',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    letterSpacing: '0.15em',
+                    color: '#080808',
+                    background: ACCENT,
+                    padding: '10px 28px',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  REGISTER INTEREST
+                </motion.button>
+              </motion.div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Register Interest panel / sheet */}
       <AnimatePresence>

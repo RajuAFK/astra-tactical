@@ -81,12 +81,14 @@ export default function StoreTeaserSection() {
               key={product.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={shouldReduce ? {} : { y: -4, borderColor: 'rgba(207,255,85,0.3)' }}
               viewport={{ once: true }}
               transition={{ duration: shouldReduce ? 0 : 0.4 }}
               style={{
                 background: '#111111',
                 border: '1px solid rgba(255,255,255,0.06)',
                 borderRadius: 0,
+                transition: 'border-color 0.2s',
               }}
             >
               {/* Image area */}
@@ -161,9 +163,11 @@ export default function StoreTeaserSection() {
 
         {/* CTA */}
         <div className="text-center">
-          <a
+          <motion.a
             href="/store"
             aria-label="Explore the Astra Tactical store"
+            whileHover={shouldReduce ? {} : { backgroundColor: 'rgba(207,255,85,0.08)' }}
+            whileTap={shouldReduce ? {} : { scale: 0.97 }}
             style={{
               fontFamily: 'var(--font-orbitron)',
               fontSize: '13px',
@@ -176,7 +180,7 @@ export default function StoreTeaserSection() {
             }}
           >
             EXPLORE THE STORE →
-          </a>
+          </motion.a>
         </div>
       </div>
 

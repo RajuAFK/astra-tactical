@@ -4,7 +4,7 @@ const ACCENT = '#CFFF55'
 
 export default function HeroSection() {
   return (
-    <section className="relative h-screen overflow-hidden" aria-label="Hero section" style={{ background: '#0A0A0A' }}>
+    <section className="relative overflow-hidden aspect-video md:aspect-auto md:h-screen" aria-label="Hero section" style={{ background: '#0A0A0A' }}>
       {/* Video background */}
       <video
         className="absolute inset-0 object-cover w-full h-full"
