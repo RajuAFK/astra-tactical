@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Shield, Package, Shirt, Target, Tent,
-  ChevronRight, ArrowLeft, X, Check, Bell, LayoutGrid, ChevronLeft,
+  Shield, Package, Shirt, Target, Tent, Crosshair, Wrench,
+  ChevronRight, ArrowLeft, X, Check, Bell, LayoutGrid, ChevronLeft, Clock,
 } from 'lucide-react'
 import type { ElementType } from 'react'
 import { supabase } from '@/lib/supabase'
@@ -28,13 +28,13 @@ const SIDE_STRIP =  48
 
 type Product = { name: string; price: string; desc?: string; badge?: string }
 type PClass  = { label: string; abbr: string; products: Product[] }
-type Cat     = { label: string; code: string; accent: string; Icon: ElementType; desc: string; classes: Record<string, PClass> }
+type Cat     = { label: string; code: string; accent: string; priceColor: string; Icon: ElementType; desc: string; comingSoon?: boolean; eta?: string; classes: Record<string, PClass> }
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────
 
 const catalog: Record<string, Cat> = {
   PROTECTION: {
-    label: 'Protection', code: 'PROT', accent: '#22C55E', Icon: Shield,
+    label: 'Protection', code: 'PROT', accent: '#22C55E', priceColor: '#86EFAC', Icon: Shield,
     desc: 'Helmets · Vests · Eye Pro · Face Pro',
     classes: {
       HELMETS:  { label: 'Helmets & Head Protection', abbr: 'HLM', products: [
@@ -60,7 +60,7 @@ const catalog: Record<string, Cat> = {
     },
   },
   APPAREL: {
-    label: 'Apparel', code: 'APRL', accent: '#3B82F6', Icon: Shirt,
+    label: 'Apparel', code: 'APRL', accent: '#3B82F6', priceColor: '#93C5FD', Icon: Shirt,
     desc: 'Combat Shirts · BDUs · Gloves',
     classes: {
       TOPS:    { label: 'Combat Shirts & Tops', abbr: 'TOP', products: [
@@ -80,7 +80,7 @@ const catalog: Record<string, Cat> = {
     },
   },
   ACCESSORIES: {
-    label: 'Accessories', code: 'ACCS', accent: '#F59E0B', Icon: Target,
+    label: 'Accessories', code: 'ACCS', accent: '#F59E0B', priceColor: '#FDE68A', Icon: Target,
     desc: 'Optics · Slings · Holsters · Pouches',
     classes: {
       SLINGS:  { label: 'Slings & Holsters', abbr: 'SLG', products: [
@@ -102,7 +102,7 @@ const catalog: Record<string, Cat> = {
     },
   },
   AMMUNITION: {
-    label: 'Ammunition', code: 'AMMO', accent: '#EF4444', Icon: Package,
+    label: 'Ammunition', code: 'AMMO', accent: '#EF4444', priceColor: '#FCA5A5', Icon: Package,
     desc: 'Standard · Bio · Tracer BBs',
     classes: {
       STANDARD: { label: 'Standard BBs',          abbr: 'STD', products: [
@@ -121,7 +121,7 @@ const catalog: Record<string, Cat> = {
     },
   },
   SURVIVAL: {
-    label: 'Survival Gear', code: 'SURV', accent: '#F97316', Icon: Tent,
+    label: 'Survival Gear', code: 'SURV', accent: '#F97316', priceColor: '#FDBA74', Icon: Tent,
     desc: 'Camping · Navigation · Fire · Hydration',
     classes: {
       CAMPING:    { label: 'Camping Gear',          abbr: 'CMP', products: [
@@ -148,6 +148,18 @@ const catalog: Record<string, Cat> = {
       ]},
     },
   },
+  REPLICAS: {
+    label: 'Replicas', code: 'REPL', accent: '#CFFF55', priceColor: '#E9FF99', Icon: Crosshair,
+    desc: 'AEGs · GBBs · Sniper Rifles · Pistols',
+    comingSoon: true, eta: 'Q3 2026',
+    classes: {},
+  },
+  UPGRADES: {
+    label: 'Upgrade Parts', code: 'UPGR', accent: '#A855F7', priceColor: '#D8B4FE', Icon: Wrench,
+    desc: 'Internals · Barrels · Hop-Up · Motors',
+    comingSoon: true, eta: 'Q4 2026',
+    classes: {},
+  },
 }
 
 // ─── Hero slides ──────────────────────────────────────────────────────────────
@@ -159,6 +171,8 @@ const HERO_SLIDES = [
   { tag: 'ACCESSORIES',        line1: 'KITTED',          line2: 'OUT.',           sub: 'Optics, slings, holsters and MOLLE pouches, fully spec\'d.',        accent: '#F59E0B', catKey: 'ACCESSORIES'   },
   { tag: 'AMMUNITION',         line1: 'LOADED &',        line2: 'ACCURATE.',      sub: 'Standard, biodegradable and tracer BBs for every setup.',           accent: '#EF4444', catKey: 'AMMUNITION'    },
   { tag: 'SURVIVAL SERIES',   line1: 'BUILT TO',        line2: 'SURVIVE.',       sub: 'Camping, navigation, fire starters and hydration for field ops.',    accent: '#F97316', catKey: 'SURVIVAL'      },
+  { tag: 'REPLICAS — Q3 2026', line1: 'YOUR',           line2: 'WEAPON.',        sub: 'Astra-spec AEGs, GBBs and sniper rifles. Launching Q3 2026.',         accent: '#CFFF55', catKey: 'REPLICAS'      },
+  { tag: 'UPGRADE PARTS — Q4 2026', line1: 'BUILD.',    line2: 'UPGRADE.',       sub: 'Internals, precision barrels, hop-up units and motors. Coming Q4 2026.', accent: '#A855F7', catKey: 'UPGRADES'      },
 ]
 
 // ─── Marquee cards ────────────────────────────────────────────────────────────
@@ -169,8 +183,8 @@ const MARQUEE_CARDS = [
   { label: 'ACCESSORIES',  sub: 'Optics · Slings · Holsters · Pouches',  accent: '#F59E0B', catKey: 'ACCESSORIES' },
   { label: 'AMMUNITION',   sub: 'Standard · Bio · Tracer BBs',           accent: '#EF4444', catKey: 'AMMUNITION'  },
   { label: 'SURVIVAL GEAR', sub: 'Camping · Navigation · Fire · Hydration', accent: '#F97316', catKey: 'SURVIVAL'    },
-  { label: 'REPLICAS',      sub: 'Coming Q3 2026',                          accent: '#CFFF55', catKey: null          },
-  { label: 'UPGRADE PARTS', sub: 'Coming Q4 2026',                          accent: '#A855F7', catKey: null          },
+  { label: 'REPLICAS',      sub: 'Coming Q3 2026',                          accent: '#CFFF55', catKey: 'REPLICAS'    },
+  { label: 'UPGRADE PARTS', sub: 'Coming Q4 2026',                          accent: '#A855F7', catKey: 'UPGRADES'   },
 ]
 
 // ─── Animation variants ───────────────────────────────────────────────────────
@@ -333,19 +347,18 @@ function HeroMarquee({ onCatSelect }: { onCatSelect: (key: string | null) => voi
           <button
             key={i}
             onClick={() => onCatSelect(c.catKey)}
-            disabled={!c.catKey}
             style={{
               width:220, flexShrink:0,
-              border:`1px solid ${c.catKey ? c.accent+'30' : BORDER}`,
+              border:`1px solid ${c.accent+'30'}`,
               borderRadius:3, padding:'16px 16px',
               background:`linear-gradient(135deg, ${c.accent}08 0%, transparent 70%)`,
-              cursor: c.catKey ? 'pointer' : 'not-allowed',
+              cursor: 'pointer',
               textAlign:'left', position:'relative', overflow:'hidden',
-              opacity: c.catKey ? 1 : 0.5,
+              opacity: 1,
               transition:'border-color 0.2s, transform 0.15s',
             }}
-            onMouseEnter={e => { if (c.catKey) (e.currentTarget as HTMLButtonElement).style.borderColor = c.accent+'66' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = c.catKey ? c.accent+'30' : BORDER }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = c.accent+'66' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = c.accent+'30' }}
           >
             <div style={{ position:'absolute', top:0, left:0, width:16, height:16, borderTop:`1px solid ${c.accent}`, borderLeft:`1px solid ${c.accent}` }} />
             <p style={{ fontFamily:MONO, fontSize:'8px', color:c.accent, letterSpacing:'0.18em', opacity:0.65, marginBottom:'6px' }}>// CATEGORY</p>
@@ -542,7 +555,7 @@ function ClassSidebar({ catKey, onSelect, onBack }: { catKey:string; onSelect:(k
 
 // ── Product card ──────────────────────────────────────────────────────────────
 
-function ProductCard({ product, accent, Icon, onNotify }: { product:Product; accent:string; Icon:ElementType; onNotify:(n:string)=>void }) {
+function ProductCard({ product, accent, priceColor, Icon, onNotify }: { product:Product; accent:string; priceColor:string; Icon:ElementType; onNotify:(n:string)=>void }) {
   const [hov, setHov] = useState(false)
   const bc = product.badge ? (BADGE_COL[product.badge] ?? accent) : accent
   return (
@@ -594,7 +607,7 @@ function ProductCard({ product, accent, Icon, onNotify }: { product:Product; acc
         </p>
         {/* Footer */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:12, borderTop:`1px solid ${BORDER}`, marginTop:'auto' }}>
-          <span style={{ fontFamily:ORB, fontSize:'15px', fontWeight:700, color:accent }}>{product.price}</span>
+          <span style={{ fontFamily:ORB, fontSize:'15px', fontWeight:700, color:priceColor }}>{product.price}</span>
           <button onClick={() => onNotify(product.name)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 11px', background:`${accent}14`, border:`1px solid ${accent}3A`, borderRadius:2, color:accent, fontFamily:MONO, fontSize:'8px', letterSpacing:'0.1em', cursor:'pointer' }}>
             <Bell size={10} /> NOTIFY ME
           </button>
@@ -629,7 +642,7 @@ function ProductGrid({ catKey, classKey, onBackToClasses, onBackToCategories, on
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(220px, 1fr))', gap:14 }}>
         {cls.products.map((p,i) => (
           <motion.div key={p.name} initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.07, duration:0.3, ease:'easeOut' }}>
-            <ProductCard product={p} accent={cat.accent} Icon={cat.Icon} onNotify={onNotify} />
+            <ProductCard product={p} accent={cat.accent} priceColor={cat.priceColor} Icon={cat.Icon} onNotify={onNotify} />
           </motion.div>
         ))}
       </div>
@@ -648,6 +661,45 @@ function BrowsePrompt({ drillDown, catKey }: { drillDown:0|1|2; catKey:string|nu
       <p style={{ fontFamily:MONO, fontSize:'10px', color:'rgba(255,255,255,0.22)', letterSpacing:'0.15em' }}>
         {(drillDown===0 ? 'SELECT A CATEGORY TO BEGIN' : `SELECT A CLASS WITHIN ${catKey ? catalog[catKey].label.toUpperCase() : ''}`)}
       </p>
+    </div>
+  )
+}
+
+// ── Coming Soon panel ─────────────────────────────────────────────────────────
+
+function ComingSoonPanel({ catKey }: { catKey: string }) {
+  const cat = catalog[catKey]
+  const Icon = cat.Icon
+  return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:480, gap:28, padding:'40px 32px', textAlign:'center' }}>
+      {/* Glow ring */}
+      <div style={{ position:'relative' }}>
+        <div style={{ width:100, height:100, borderRadius:'50%', border:`1px solid ${cat.accent}30`, background:`${cat.accent}08`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <Icon size={36} color={`${cat.accent}88`} />
+        </div>
+        <motion.div
+          animate={{ opacity:[0.15, 0.35, 0.15] }}
+          transition={{ duration:3, repeat:Infinity, ease:'easeInOut' }}
+          style={{ position:'absolute', inset:-12, borderRadius:'50%', border:`1px solid ${cat.accent}`, pointerEvents:'none' }}
+        />
+      </div>
+      {/* Badge */}
+      <div style={{ display:'flex', alignItems:'center', gap:8, padding:'5px 14px', border:`1px solid ${cat.accent}40`, background:`${cat.accent}0D`, borderRadius:2 }}>
+        <Clock size={11} color={cat.accent} />
+        <span style={{ fontFamily:MONO, fontSize:'9px', color:cat.accent, letterSpacing:'0.18em' }}>COMING {cat.eta}</span>
+      </div>
+      {/* Heading */}
+      <div>
+        <h2 style={{ fontFamily:ORB, fontSize:'clamp(28px, 4vw, 44px)', fontWeight:700, color:'#fff', lineHeight:1, marginBottom:12 }}>
+          {cat.label.toUpperCase()}
+        </h2>
+        <p style={{ fontFamily:MONO, fontSize:'10px', color:'rgba(255,255,255,0.3)', letterSpacing:'0.12em' }}>{cat.desc}</p>
+      </div>
+      <p style={{ fontFamily:RAJ, fontSize:'16px', color:'rgba(255,255,255,0.45)', maxWidth:380, lineHeight:1.7 }}>
+        This category is currently in development. Check back soon — or register your interest to be notified at launch.
+      </p>
+      {/* Divider line */}
+      <div style={{ width:60, height:1, background:`linear-gradient(to right, transparent, ${cat.accent}55, transparent)` }} />
     </div>
   )
 }
@@ -813,9 +865,9 @@ export default function StorePage() {
           </AnimatePresence>
         </motion.aside>
 
-        {/* Class column: appears when drillDown ≥ 1; full ↔ strip */}
+        {/* Class column: appears when drillDown ≥ 1 and not coming-soon */}
         <AnimatePresence>
-          {drillDown >= 1 && selectedCat && (
+          {drillDown >= 1 && selectedCat && !catalog[selectedCat].comingSoon && (
             <motion.aside
               key="class-col"
               className="hidden md:block"
@@ -844,7 +896,12 @@ export default function StorePage() {
         {/* ── Content area ─────────────────────────────────────────────────── */}
         <div style={{ flex:1, minWidth:0 }}>
           <AnimatePresence mode="wait">
-            {drillDown === 2 && selectedCat && selectedClass ? (
+            {drillDown >= 1 && selectedCat && catalog[selectedCat].comingSoon ? (
+              <motion.div key={`coming-${selectedCat}`}
+                initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
+                <ComingSoonPanel catKey={selectedCat} />
+              </motion.div>
+            ) : drillDown === 2 && selectedCat && selectedClass ? (
               <motion.div key={`products-${selectedCat}-${selectedClass}`}
                 initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
                 <ProductGrid
