@@ -100,7 +100,7 @@ export default function WeaponComparisonSection() {
       <div className="relative max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-14">
-          <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#ff5722', opacity: 0.7, letterSpacing: '0.2em', marginBottom: '10px' }}>
+          <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#CFFF55', opacity: 0.7, letterSpacing: '0.2em', marginBottom: '10px' }}>
             // ENERGY COMPARISON MODULE
           </p>
           <h2 style={{ fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(20px, 4vw, 34px)', color: '#ffffff', marginBottom: '10px' }}>
@@ -174,7 +174,7 @@ export default function WeaponComparisonSection() {
                 inset: 0,
                 borderRadius: '50%',
                 background: 'radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 70%, #080808 100%)',
-                border: '1px solid rgba(255,87,34,0.15)',
+                border: '1px solid rgba(207,255,85,0.15)',
               }}
               aria-hidden="true"
             />
@@ -185,7 +185,7 @@ export default function WeaponComparisonSection() {
                 position: 'absolute',
                 inset: '8px',
                 borderRadius: '50%',
-                border: '1px dashed rgba(255,87,34,0.15)',
+                border: '1px dashed rgba(207,255,85,0.15)',
               }}
               aria-hidden="true"
             />
@@ -255,7 +255,7 @@ export default function WeaponComparisonSection() {
               aria-hidden="true"
             >
               {/* Track */}
-              <circle cx="190" cy="190" r="178" fill="none" stroke="rgba(255,87,34,0.12)" strokeWidth="3" />
+              <circle cx="190" cy="190" r="178" fill="none" stroke="rgba(207,255,85,0.12)" strokeWidth="3" />
               {/* Energy fill arc */}
               <circle
                 cx="190"
@@ -273,7 +273,7 @@ export default function WeaponComparisonSection() {
             {/* Center prompt — no selection */}
             {!weapon && (
               <div className="absolute text-center" style={{ zIndex: 10 }}>
-                <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: 'rgba(255,87,34,0.5)', letterSpacing: '0.15em' }}>
+                <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: 'rgba(207,255,85,0.5)', letterSpacing: '0.15em' }}>
                   SELECT A<br />WEAPON
                 </p>
               </div>
@@ -335,9 +335,9 @@ export default function WeaponComparisonSection() {
         </div>
 
         {/* Key insight */}
-        <div style={{ maxWidth: '700px', margin: '48px auto 0', borderLeft: '3px solid #ff5722', padding: '16px 24px', background: 'rgba(255,87,34,0.04)' }}>
+        <div style={{ maxWidth: '700px', margin: '48px auto 0', borderLeft: '3px solid #CFFF55', padding: '16px 24px', background: 'rgba(207,255,85,0.04)' }}>
           <div className="flex items-start gap-2">
-            <Zap size={16} color="#ff5722" style={{ flexShrink: 0, marginTop: '2px' }} aria-hidden="true" />
+            <Zap size={16} color="#CFFF55" style={{ flexShrink: 0, marginTop: '2px' }} aria-hidden="true" />
             <p style={{ fontFamily: 'var(--font-rajdhani)', fontSize: '15px', color: '#ffffff', lineHeight: 1.7 }}>
               <strong>Key Insight:</strong> A standard Nerf blaster and an airsoft gun often operate at identical energy levels. The difference is context — airsoft is a structured sport with protective gear, trained marshals, and community rules.
             </p>

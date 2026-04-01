@@ -24,7 +24,7 @@ export default function LegalTeaserSection() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '11px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '12px',
@@ -81,7 +81,7 @@ export default function LegalTeaserSection() {
                 style={{
                   fontFamily: 'var(--font-orbitron)',
                   fontSize: '11px',
-                  color: '#ff5722',
+                  color: '#CFFF55',
                   letterSpacing: '0.1em',
                   textDecoration: 'none',
                 }}
@@ -115,7 +115,7 @@ export default function LegalTeaserSection() {
                       style={{
                         fontFamily: 'var(--font-space-mono)',
                         fontSize: '11px',
-                        color: '#ff5722',
+                        color: '#CFFF55',
                         flexShrink: 0,
                       }}
                     >
@@ -166,7 +166,7 @@ export default function LegalTeaserSection() {
                 style={{
                   fontFamily: 'var(--font-orbitron)',
                   fontSize: '11px',
-                  color: '#ff5722',
+                  color: '#CFFF55',
                   letterSpacing: '0.1em',
                   textDecoration: 'none',
                 }}

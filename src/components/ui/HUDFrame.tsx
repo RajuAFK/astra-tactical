@@ -15,16 +15,16 @@ export default function HUDFrame({
 }: HUDFrameProps) {
   const glowMap = {
     low: 'none',
-    medium: '0 0 8px rgba(255,87,34,0.15)',
-    high: '0 0 20px rgba(255,87,34,0.3)',
+    medium: '0 0 8px rgba(207,255,85,0.15)',
+    high: '0 0 20px rgba(207,255,85,0.3)',
   }
 
   return (
     <div
       className={`hud-corner hud-corner-bottom relative p-3 backdrop-blur-sm ${className}`}
       style={{
-        border: '1px solid rgba(255,87,34,0.25)',
-        background: 'rgba(255,87,34,0.03)',
+        border: '1px solid rgba(207,255,85,0.25)',
+        background: 'rgba(207,255,85,0.03)',
         fontFamily: 'var(--font-space-mono)',
         boxShadow: glowMap[glowIntensity],
       }}
@@ -34,7 +34,7 @@ export default function HUDFrame({
           className="absolute"
           style={{
             fontSize: '10px',
-            color: '#ff5722',
+            color: '#CFFF55',
             opacity: 0.7,
             letterSpacing: '0.15em',
             top: '-8px',

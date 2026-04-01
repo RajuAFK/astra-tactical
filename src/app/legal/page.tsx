@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import HUDFrame from '@/components/ui/HUDFrame'
 import { Zap } from 'lucide-react'
+import WeaponComparisonSection from '@/components/home/WeaponComparisonSection'
 
 const faqs = [
   {
@@ -67,6 +68,9 @@ export default function LegalPage() {
         </HUDFrame>
       </section>
 
+      {/* Weapon energy comparison */}
+      <WeaponComparisonSection />
+
       {/* Main content */}
       <div
         style={{
@@ -82,7 +86,7 @@ export default function LegalPage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '10px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '8px',
@@ -119,7 +123,7 @@ export default function LegalPage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '10px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '8px',
@@ -151,7 +155,7 @@ export default function LegalPage() {
           </p>
           <HUDFrame glowIntensity="medium">
             <div className="flex items-start gap-3 p-2">
-              <Zap size={16} color="#ff5722" style={{ flexShrink: 0, marginTop: '2px' }} aria-hidden="true" />
+              <Zap size={16} color="#CFFF55" style={{ flexShrink: 0, marginTop: '2px' }} aria-hidden="true" />
               <p
                 style={{
                   fontFamily: 'var(--font-rajdhani)',
@@ -172,7 +176,7 @@ export default function LegalPage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '10px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '8px',
@@ -204,7 +208,7 @@ export default function LegalPage() {
                   style={{
                     fontFamily: 'var(--font-space-mono)',
                     fontSize: '10px',
-                    color: '#ff5722',
+                    color: '#CFFF55',
                     flexShrink: 0,
                     marginTop: '3px',
                   }}
@@ -232,7 +236,7 @@ export default function LegalPage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '10px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '8px',
@@ -292,7 +296,7 @@ export default function LegalPage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '10px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '8px',
@@ -341,7 +345,7 @@ export default function LegalPage() {
                     style={{
                       fontFamily: 'var(--font-space-mono)',
                       fontSize: '18px',
-                      color: '#ff5722',
+                      color: '#CFFF55',
                       flexShrink: 0,
                     }}
                     aria-hidden="true"
@@ -373,7 +377,7 @@ export default function LegalPage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '10px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '16px',

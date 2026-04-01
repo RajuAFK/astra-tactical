@@ -17,7 +17,7 @@ export default function Footer() {
     <footer
       style={{
         background: '#080808',
-        borderTop: '1px solid rgba(255,87,34,0.15)',
+        borderTop: '1px solid rgba(207,255,85,0.15)',
         padding: '48px 24px',
       }}
       aria-label="Site footer"
@@ -31,7 +31,7 @@ export default function Footer() {
                 style={{
                   fontFamily: 'var(--font-orbitron)',
                   fontSize: '18px',
-                  color: '#ff5722',
+                  color: '#CFFF55',
                   fontWeight: 700,
                   letterSpacing: '0.2em',
                 }}
@@ -86,7 +86,7 @@ export default function Footer() {
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontSize: '10px',
-                color: '#ff5722',
+                color: '#CFFF55',
                 opacity: 0.6,
                 letterSpacing: '0.15em',
                 marginBottom: '16px',
@@ -127,7 +127,7 @@ export default function Footer() {
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontSize: '10px',
-                color: '#ff5722',
+                color: '#CFFF55',
                 opacity: 0.6,
                 letterSpacing: '0.15em',
                 marginBottom: '16px',
@@ -158,7 +158,7 @@ export default function Footer() {
                   borderTop: 'none',
                   borderLeft: 'none',
                   borderRight: 'none',
-                  borderBottom: '1px solid rgba(255,87,34,0.3)',
+                  borderBottom: '1px solid rgba(207,255,85,0.3)',
                   color: '#ffffff',
                   fontFamily: 'var(--font-rajdhani)',
                   fontSize: '14px',
@@ -166,10 +166,10 @@ export default function Footer() {
                   padding: '8px 0',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderBottomColor = '#ff5722'
+                  e.target.style.borderBottomColor = '#CFFF55'
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderBottomColor = 'rgba(255,87,34,0.3)'
+                  e.target.style.borderBottomColor = 'rgba(207,255,85,0.3)'
                 }}
               />
               <button
@@ -178,7 +178,7 @@ export default function Footer() {
                 style={{
                   fontFamily: 'var(--font-orbitron)',
                   fontSize: '11px',
-                  background: '#ff5722',
+                  background: '#CFFF55',
                   color: '#ffffff',
                   padding: '8px 16px',
                   border: 'none',

@@ -20,7 +20,7 @@ const WEAPONS: Record<string, WeaponData> = {
     velocityMs: 20,
     massG: 1.2,
     legalStatus: 'UNRESTRICTED',
-    statusColor: '#ff5722',
+    statusColor: '#CFFF55',
     barColor: '#FF6B00',
     description:
       'Standard foam dart blasters operate comfortably within the 2J legal threshold — often less powerful than a standard airsoft gun.',
@@ -42,8 +42,8 @@ const WEAPONS: Record<string, WeaponData> = {
     velocityMs: 90,
     massG: 0.3,
     legalStatus: 'LEGAL — Below 2J Threshold',
-    statusColor: '#ff5722',
-    barColor: '#ff5722',
+    statusColor: '#CFFF55',
+    barColor: '#CFFF55',
     description:
       'Airsoft guns fire 6mm plastic BBs at under 2 joules — keeping them classified as sport equipment, not firearms, under Indian law.',
   },

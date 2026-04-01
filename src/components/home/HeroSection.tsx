@@ -36,16 +36,34 @@ export default function HeroSection() {
         preserveAspectRatio="none"
         aria-hidden="true"
       >
+        <defs>
+          {/* Gradient: transparent at edges, grey at centre — for inner edge strokes */}
+          <linearGradient id="edgeGradTop" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor="rgb(160,160,160)" stopOpacity="0" />
+            <stop offset="25%"  stopColor="rgb(160,160,160)" stopOpacity="0.5" />
+            <stop offset="50%"  stopColor="rgb(160,160,160)" stopOpacity="0.7" />
+            <stop offset="75%"  stopColor="rgb(160,160,160)" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="rgb(160,160,160)" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="edgeGradBottom" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stopColor="rgb(160,160,160)" stopOpacity="0" />
+            <stop offset="25%"  stopColor="rgb(160,160,160)" stopOpacity="0.5" />
+            <stop offset="50%"  stopColor="rgb(160,160,160)" stopOpacity="0.7" />
+            <stop offset="75%"  stopColor="rgb(160,160,160)" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="rgb(160,160,160)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
         {/* Top bar */}
         <polygon
-          points="0,0 100,0 100,7.8 68.4,7.8 66.6,10.3 33.4,10.3 31.6,7.8 0,7.8"
+          points="0,0 100,0 100,9.5 68.4,9.5 66.6,12.5 33.4,12.5 31.6,9.5 0,9.5"
           fill="#0A0A0A"
         />
-        {/* Subtle inner edge line on top bar */}
+        {/* Gradient inner edge — top bar faces video */}
         <polyline
-          points="0,7.8 31.6,7.8 33.4,10.3 66.6,10.3 68.4,7.8 100,7.8"
+          points="0,9.5 31.6,9.5 33.4,12.5 66.6,12.5 68.4,9.5 100,9.5"
           fill="none"
-          stroke="rgba(255,255,255,0.07)"
+          stroke="url(#edgeGradTop)"
           strokeWidth="0.15"
           vectorEffect="non-scaling-stroke"
         />
@@ -55,11 +73,11 @@ export default function HeroSection() {
           points="0,93 31.6,93 33.4,90.8 66.6,90.8 68.4,93 100,93 100,100 0,100"
           fill="#0A0A0A"
         />
-        {/* Subtle inner edge line on bottom bar */}
+        {/* Gradient inner edge — bottom bar faces video */}
         <polyline
           points="0,93 31.6,93 33.4,90.8 66.6,90.8 68.4,93 100,93"
           fill="none"
-          stroke="rgba(255,255,255,0.07)"
+          stroke="url(#edgeGradBottom)"
           strokeWidth="0.15"
           vectorEffect="non-scaling-stroke"
         />

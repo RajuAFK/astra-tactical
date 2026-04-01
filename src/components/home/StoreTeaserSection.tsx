@@ -52,7 +52,7 @@ export default function StoreTeaserSection() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '11px',
-              color: '#ff5722',
+              color: '#CFFF55',
               opacity: 0.6,
               letterSpacing: '0.2em',
               marginBottom: '12px',
@@ -64,8 +64,8 @@ export default function StoreTeaserSection() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '9px',
-              border: '1px solid rgba(255,87,34,0.4)',
-              color: '#ff5722',
+              border: '1px solid rgba(207,255,85,0.4)',
+              color: '#CFFF55',
               padding: '3px 10px',
               letterSpacing: '0.1em',
             }}
@@ -129,7 +129,7 @@ export default function StoreTeaserSection() {
                   style={{
                     fontFamily: 'var(--font-space-mono)',
                     fontSize: '14px',
-                    color: '#ff5722',
+                    color: '#CFFF55',
                     marginTop: '8px',
                   }}
                 >
@@ -142,8 +142,8 @@ export default function StoreTeaserSection() {
                     width: '100%',
                     fontFamily: 'var(--font-orbitron)',
                     fontSize: '11px',
-                    border: '1px solid rgba(255,87,34,0.3)',
-                    color: '#ff5722',
+                    border: '1px solid rgba(207,255,85,0.3)',
+                    color: '#CFFF55',
                     background: 'transparent',
                     padding: '8px',
                     marginTop: '12px',
@@ -167,8 +167,8 @@ export default function StoreTeaserSection() {
             style={{
               fontFamily: 'var(--font-orbitron)',
               fontSize: '13px',
-              border: '1px solid rgba(255,87,34,0.4)',
-              color: '#ff5722',
+              border: '1px solid rgba(207,255,85,0.4)',
+              color: '#CFFF55',
               padding: '14px 32px',
               display: 'inline-block',
               textDecoration: 'none',
@@ -194,7 +194,7 @@ export default function StoreTeaserSection() {
               maxWidth: '400px',
               width: '90%',
               background: '#111111',
-              border: '1px solid rgba(255,87,34,0.3)',
+              border: '1px solid rgba(207,255,85,0.3)',
               padding: '32px',
               position: 'relative',
             }}
@@ -222,7 +222,7 @@ export default function StoreTeaserSection() {
                   style={{
                     fontFamily: 'var(--font-space-mono)',
                     fontSize: '12px',
-                    color: '#ff5722',
+                    color: '#CFFF55',
                     padding: '16px 0',
                   }}
                 >
@@ -234,7 +234,7 @@ export default function StoreTeaserSection() {
                     style={{
                       fontFamily: 'var(--font-orbitron)',
                       fontSize: '14px',
-                      color: '#ff5722',
+                      color: '#CFFF55',
                       marginBottom: '8px',
                     }}
                   >
@@ -263,7 +263,7 @@ export default function StoreTeaserSection() {
                       borderTop: 'none',
                       borderLeft: 'none',
                       borderRight: 'none',
-                      borderBottom: '1px solid rgba(255,87,34,0.3)',
+                      borderBottom: '1px solid rgba(207,255,85,0.3)',
                       color: '#ffffff',
                       fontFamily: 'var(--font-rajdhani)',
                       fontSize: '14px',
@@ -278,7 +278,7 @@ export default function StoreTeaserSection() {
                     aria-label="Submit product interest notification"
                     style={{
                       width: '100%',
-                      background: '#ff5722',
+                      background: '#CFFF55',
                       color: '#ffffff',
                       fontFamily: 'var(--font-orbitron)',
                       fontSize: '12px',

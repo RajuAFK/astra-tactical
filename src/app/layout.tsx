@@ -3,6 +3,7 @@ import { Orbitron, Space_Mono, Rajdhani, Barlow_Condensed } from 'next/font/goog
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import TacticalBackground from '@/components/ui/TacticalBackground'
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -48,9 +49,10 @@ export default function RootLayout({
       className={`${orbitron.variable} ${spaceMono.variable} ${rajdhani.variable} ${barlowCondensed.variable}`}
     >
       <body style={{ fontFamily: 'var(--font-rajdhani), sans-serif' }}>
+        <TacticalBackground />
         <div
           className="animate-scanpulse fixed top-0 left-0 right-0 z-[60] h-[2px]"
-          style={{ backgroundColor: '#ff5722' }}
+          style={{ backgroundColor: '#CFFF55' }}
           aria-hidden="true"
         />
         <Navbar />

@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { User } from 'lucide-react'
 
 const navLinks = [
   { label: 'ABOUT', href: '/#about' },
   { label: 'THE SPORT', href: '/#comparison' },
+  { label: 'SERVICES', href: '/services' },
   { label: 'LEGAL', href: '/legal' },
   { label: 'STORE', href: '/store' },
 ]
@@ -29,45 +29,31 @@ export default function Navbar() {
         style={{
           background: scrolled ? 'rgba(10,10,10,0.95)' : 'transparent',
           backdropFilter: scrolled ? 'blur(8px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(255,87,34,0.15)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(207,255,85,0.15)' : 'none',
         }}
         aria-label="Main navigation"
       >
-        <div className="w-full px-6 py-4 flex items-center">
-          {/* Logo + Wordmark */}
+        <div className="w-full px-6 py-3 flex items-center">
+          {/* Logo + Logotype */}
           <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="Astra Tactical home">
-            <div style={{ position: 'relative', width: '32px', height: '32px', flexShrink: 0 }}>
+            <div style={{ position: 'relative', width: '52px', height: '52px', flexShrink: 0 }}>
               <Image
-                src="/logos/logo-negative-space.png"
+                src="/logos/logo-3d.png"
                 alt="Astra Tactical logo"
                 fill
-                sizes="32px"
+                sizes="52px"
                 style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
               />
             </div>
-            <span
-              style={{
-                fontFamily: 'var(--font-rajdhani)',
-                fontSize: '17px',
-                color: '#ffffff',
-                fontWeight: 600,
-                letterSpacing: '0.25em',
-                textTransform: 'uppercase',
-              }}
-            >
-              ASTRA TACTICAL
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '9px',
-                color: '#ff5722',
-                border: '1px solid rgba(255,87,34,0.4)',
-                padding: '1px 4px',
-              }}
-            >
-              [IN]
-            </span>
+            <div style={{ position: 'relative', height: '52px', width: '130px', flexShrink: 0 }}>
+              <Image
+                src="/logos/logotype.png"
+                alt="Astra Tactical"
+                fill
+                sizes="130px"
+                style={{ objectFit: 'contain', objectPosition: 'left center', mixBlendMode: 'screen' }}
+              />
+            </div>
           </Link>
 
           {/* Desktop nav — pushed to the right */}
@@ -91,20 +77,6 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {/* Mission Control user portal — link to be updated when hosted */}
-            <Link
-              href="/mission-control"
-              aria-label="Mission Control user portal"
-              style={{
-                color: 'rgba(255,255,255,0.45)',
-                transition: 'color 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              className="hover:text-white"
-            >
-              <User size={18} strokeWidth={1.5} />
-            </Link>
           </div>
 
           {/* Mobile hamburger */}

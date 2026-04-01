@@ -40,7 +40,7 @@ export default function AboutSection() {
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontSize: '11px',
-                color: '#ff5722',
+                color: '#CFFF55',
                 opacity: 0.6,
                 letterSpacing: '0.2em',
                 marginBottom: '24px',
@@ -54,7 +54,7 @@ export default function AboutSection() {
                   fontFamily: 'var(--font-orbitron)',
                   fontSize: 'clamp(40px, 8vw, 72px)',
                   color: 'transparent',
-                  WebkitTextStroke: '1px rgba(255,87,34,0.4)',
+                  WebkitTextStroke: '1px rgba(207,255,85,0.4)',
                   lineHeight: 1,
                   letterSpacing: '0.05em',
                 }}
@@ -65,7 +65,7 @@ export default function AboutSection() {
                 style={{
                   fontFamily: 'var(--font-orbitron)',
                   fontSize: 'clamp(40px, 8vw, 72px)',
-                  color: '#ff5722',
+                  color: '#CFFF55',
                   lineHeight: 1,
                   letterSpacing: '0.05em',
                 }}
@@ -77,7 +77,7 @@ export default function AboutSection() {
               style={{
                 width: '80px',
                 height: '2px',
-                background: 'linear-gradient(90deg, #ff5722, transparent)',
+                background: 'linear-gradient(90deg, #CFFF55, transparent)',
                 margin: '24px 0',
               }}
               aria-hidden="true"
@@ -127,7 +127,7 @@ export default function AboutSection() {
                   style={{
                     fontFamily: 'var(--font-orbitron)',
                     fontSize: '32px',
-                    color: '#ff5722',
+                    color: '#CFFF55',
                     lineHeight: 1,
                     marginBottom: '8px',
                   }}
