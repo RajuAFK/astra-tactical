@@ -62,7 +62,7 @@ export default function StorePage() {
       {/* Hero */}
       <section
         className="grid-bg flex items-center justify-center"
-        style={{ height: '40vh', background: '#080808' }}
+        style={{ minHeight: '40vh', paddingTop: '96px', background: '#080808' }}
         aria-label="Store hero"
       >
         <HUDFrame label="TACTICAL SUPPLY" className="text-center">
@@ -81,7 +81,7 @@ export default function StorePage() {
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontSize: '12px',
-                color: '#ff5722',
+                color: '#ffffff',
               }}
             >
               Status: STORE OPENS Q3 2025
@@ -95,7 +95,7 @@ export default function StorePage() {
         className="sticky top-16 z-40 flex gap-3 flex-wrap px-6 py-3 backdrop-blur-md"
         style={{
           background: 'rgba(10,10,10,0.95)',
-          borderBottom: '1px solid rgba(255,87,34,0.1)',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}
         role="toolbar"
         aria-label="Filter products by category"
@@ -109,9 +109,9 @@ export default function StorePage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '11px',
-              border: `1px solid ${activeCategory === cat ? '#ff5722' : 'rgba(255,255,255,0.1)'}`,
-              color: activeCategory === cat ? '#ff5722' : '#8A8A8A',
-              background: activeCategory === cat ? 'rgba(255,87,34,0.05)' : 'transparent',
+              border: `1px solid ${activeCategory === cat ? '#ffffff' : 'rgba(255,255,255,0.1)'}`,
+              color: activeCategory === cat ? '#ffffff' : '#8A8A8A',
+              background: activeCategory === cat ? 'rgba(255,255,255,0.05)' : 'transparent',
               padding: '4px 14px',
               cursor: 'pointer',
               letterSpacing: '0.1em',
@@ -182,7 +182,7 @@ export default function StorePage() {
                   style={{
                     fontFamily: 'var(--font-space-mono)',
                     fontSize: '14px',
-                    color: '#ff5722',
+                    color: '#ffffff',
                     marginTop: '8px',
                   }}
                 >
@@ -195,8 +195,8 @@ export default function StorePage() {
                     width: '100%',
                     fontFamily: 'var(--font-orbitron)',
                     fontSize: '11px',
-                    border: '1px solid rgba(255,87,34,0.3)',
-                    color: '#ff5722',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    color: '#ffffff',
                     background: 'transparent',
                     padding: '8px',
                     marginTop: '12px',
@@ -230,8 +230,8 @@ export default function StorePage() {
             style={{
               fontFamily: 'var(--font-orbitron)',
               fontSize: '13px',
-              border: '1px solid rgba(255,87,34,0.4)',
-              color: '#ff5722',
+              border: '1px solid rgba(255,255,255,0.4)',
+              color: '#ffffff',
               padding: '14px 32px',
               background: 'transparent',
               cursor: 'pointer',
@@ -258,7 +258,7 @@ export default function StorePage() {
               maxWidth: '400px',
               width: '90%',
               background: '#111111',
-              border: '1px solid rgba(255,87,34,0.3)',
+              border: '1px solid rgba(255,255,255,0.3)',
               padding: '32px',
               position: 'relative',
             }}
@@ -286,7 +286,7 @@ export default function StorePage() {
                   style={{
                     fontFamily: 'var(--font-space-mono)',
                     fontSize: '12px',
-                    color: '#ff5722',
+                    color: '#ffffff',
                     padding: '16px 0',
                   }}
                 >
@@ -298,7 +298,7 @@ export default function StorePage() {
                     style={{
                       fontFamily: 'var(--font-orbitron)',
                       fontSize: '14px',
-                      color: '#ff5722',
+                      color: '#ffffff',
                       marginBottom: '8px',
                     }}
                   >
@@ -327,7 +327,7 @@ export default function StorePage() {
                       borderTop: 'none',
                       borderLeft: 'none',
                       borderRight: 'none',
-                      borderBottom: '1px solid rgba(255,87,34,0.3)',
+                      borderBottom: '1px solid rgba(255,255,255,0.3)',
                       color: '#ffffff',
                       fontFamily: 'var(--font-rajdhani)',
                       fontSize: '14px',
@@ -342,7 +342,7 @@ export default function StorePage() {
                     aria-label="Submit store interest notification"
                     style={{
                       width: '100%',
-                      background: '#ff5722',
+                      background: '#ffffff',
                       color: '#ffffff',
                       fontFamily: 'var(--font-orbitron)',
                       fontSize: '12px',

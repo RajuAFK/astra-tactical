@@ -8,11 +8,11 @@ import WeaponComparisonSection from '@/components/home/WeaponComparisonSection'
 const faqs = [
   {
     q: 'Is it legal to buy an airsoft gun in India?',
-    a: 'Yes. Airsoft guns operating below 2 joules of muzzle energy are classified as sport equipment, not firearms. They can be purchased and owned without an arms license.',
+    a: 'Yes. Under the Arms Act 1959, a license is only required for projectile weapons exceeding 20 joules of muzzle energy. Airsoft guns operate at under 2 joules — well within the legal limit — and are classified as sport equipment, not firearms.',
   },
   {
     q: 'Do I need a license to own an airsoft gun?',
-    a: 'No license is required for airsoft guns that comply with the sub-2J specification. However, owning a modified gun that exceeds this threshold would require an arms license.',
+    a: 'No license is required for airsoft guns. The Arms Act 1959 mandates a license only for devices exceeding 20 joules. Airsoft operates at under 2J. However, modifying a gun to approach or exceed the 20J threshold would bring it within the scope of the Act.',
   },
   {
     q: 'Can I carry it on the street or in public?',
@@ -20,7 +20,7 @@ const faqs = [
   },
   {
     q: 'What happens if police question me about my airsoft gun?',
-    a: "Remain calm and explain that it is a sport replica operating below the 2J legal threshold. Carry documentation such as the product's specifications or purchase receipt. Astra Tactical will publish a legal reference card for members.",
+    a: "Remain calm and explain that it is a sport replica operating well below the 20J Arms Act threshold. Carry documentation such as the product's specifications or purchase receipt. Astra Tactical will publish a legal reference card for members.",
   },
   {
     q: 'Is airsoft the same as paintball?',
@@ -40,7 +40,7 @@ export default function LegalPage() {
       {/* Hero */}
       <section
         className="grid-bg flex items-center justify-center"
-        style={{ height: '30vh', background: '#0A0A0A' }}
+        style={{ minHeight: '30vh', paddingTop: '96px', background: '#0A0A0A' }}
         aria-label="Legal page hero"
       >
         <HUDFrame label="LEGAL BRIEF" className="text-center">
@@ -113,7 +113,7 @@ export default function LegalPage() {
               lineHeight: 1.9,
             }}
           >
-            The Arms Act 1959 is the primary legislation governing weapons in India. Under this Act, any device capable of propelling a projectile with a muzzle energy exceeding 2 joules is legally classified as a firearm, and its ownership requires a government-issued arms license.
+            The Arms Act 1959 is the primary legislation governing weapons in India. Under this Act, any device capable of propelling a projectile with a muzzle energy exceeding 20 joules is legally classified as a firearm, and its ownership requires a government-issued arms license. Devices operating below 20 joules — including airsoft guns — do not fall under this requirement.
           </p>
         </section>
 
@@ -140,7 +140,7 @@ export default function LegalPage() {
               marginBottom: '16px',
             }}
           >
-            The 2-Joule Exception
+            The 20-Joule Threshold
           </h2>
           <p
             style={{
@@ -151,7 +151,7 @@ export default function LegalPage() {
               marginBottom: '24px',
             }}
           >
-            Airsoft guns are specifically designed to operate below the 2-joule muzzle energy threshold. This engineering choice is intentional — it keeps the sport equipment classification intact and places airsoft firmly outside the scope of the Arms Act. This is not a legal grey area; it is a clearly defined boundary that responsible airsoft operators like Astra Tactical strictly maintain.
+            The Arms Act sets the license threshold at 20 joules. Airsoft guns are specifically designed to operate below 2 joules — giving a 10× safety margin below the legal limit. This is not a legal grey area; it is a clearly defined boundary that responsible operators like Astra Tactical strictly maintain.
           </p>
           <HUDFrame glowIntensity="medium">
             <div className="flex items-start gap-3 p-2">
@@ -164,7 +164,7 @@ export default function LegalPage() {
                   lineHeight: 1.7,
                 }}
               >
-                In technical terms: at 0.3g BB mass and 90 m/s velocity, the kinetic energy is approximately 1.2 joules — well within the legal threshold.
+                In technical terms: at 0.3g BB mass and 90 m/s velocity, the kinetic energy is approximately 1.2 joules — less than 1/16th of the 20J Arms Act threshold.
               </p>
             </div>
           </HUDFrame>
@@ -258,7 +258,7 @@ export default function LegalPage() {
           <div className="space-y-3">
             {[
               'Carrying an airsoft gun openly in public spaces',
-              'Modifying the gun to exceed the 2J threshold',
+              'Modifying the gun to approach or exceed the 20J threshold',
               'Removing, painting over, or obscuring the mandatory orange tip indicator',
               'Representing the gun as a real firearm in any context',
               'Using on public land without authorization',

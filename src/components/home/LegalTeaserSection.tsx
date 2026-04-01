@@ -73,7 +73,7 @@ export default function LegalTeaserSection() {
                   marginBottom: '16px',
                 }}
               >
-                Under the Arms Act 1959, any device capable of propelling a projectile exceeding 2 joules of energy is classified as a firearm. Airsoft guns, firing 6mm BBs at under 2J, fall outside this definition — making them legal as sports equipment.
+                Under the Arms Act 1959, a projectile weapon requires a license only if its muzzle energy exceeds 20 joules. Airsoft guns fire 6mm BBs at under 2J — well within the legal limit, no license required.
               </p>
               <Link
                 href="/legal"

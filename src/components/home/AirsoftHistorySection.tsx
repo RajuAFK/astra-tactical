@@ -35,6 +35,20 @@ export default function AirsoftHistorySection() {
       className="md:px-8 lg:px-14"
       style={{ background: '#080808', width: '100%' }}
     >
+      {/* ── Section label ── */}
+      <p
+        style={{
+          fontFamily: 'var(--font-space-mono)',
+          fontSize: '11px',
+          color: '#CFFF55',
+          opacity: 0.6,
+          letterSpacing: '0.2em',
+          padding: '24px 16px 12px',
+        }}
+      >
+        // THE SPORT
+      </p>
+
       {/* ── Tab bar ── */}
       <div
         style={{
@@ -80,8 +94,8 @@ export default function AirsoftHistorySection() {
             flexShrink: 0,
           }}
         >
-          <span className="hidden md:inline" style={{ width: '180px' }}>HISTORY</span>
-          <span className="md:hidden">HISTORY</span>
+          <span className="hidden md:inline" style={{ width: '180px', padding: '0 16px' }}>HISTORY</span>
+          <span className="md:hidden" style={{ padding: '0 12px' }}>HISTORY</span>
         </button>
 
         {/* AIRSOFT NOW tab */}
@@ -104,8 +118,8 @@ export default function AirsoftHistorySection() {
             flexShrink: 0,
           }}
         >
-          <span className="hidden md:inline" style={{ width: '180px' }}>AIRSOFT NOW</span>
-          <span className="md:hidden">AIRSOFT NOW</span>
+          <span className="hidden md:inline" style={{ width: '180px', padding: '0 16px' }}>AIRSOFT NOW</span>
+          <span className="md:hidden" style={{ padding: '0 12px' }}>AIRSOFT NOW</span>
         </button>
 
         {/* Spacer — desktop only */}
@@ -252,30 +266,37 @@ export default function AirsoftHistorySection() {
         <div
           className="hidden md:flex"
           style={{ width: '84px', flexShrink: 0, borderLeft: '1px solid rgba(255,255,255,0.06)', flexDirection: 'column', alignItems: 'center', paddingTop: '44px', gap: '4px' }}
-          aria-hidden="true"
         >
           {[
-            { num: '01', active: activeTab === 'history' },
-            { num: '02', active: activeTab === 'airsoftNow' },
-          ].map(({ num, active }) => (
-            <div
-              key={num}
-              style={{
-                width: '74px',
-                height: '74px',
-                border: active ? 'none' : '1px solid #909090',
-                background: active ? 'rgba(207,255,85,0.15)' : 'transparent',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                justifyContent: 'flex-end',
-                padding: '8px',
-              }}
-            >
-              <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '9px', color: active ? '#CFFF55' : '#909090', letterSpacing: '0.1em' }}>SPEC</div>
-              <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '28px', color: active ? '#CFFF55' : '#909090', lineHeight: 1 }}>{num}</div>
-            </div>
-          ))}
+            { num: '01', tab: 'history' as TabKey },
+            { num: '02', tab: 'airsoftNow' as TabKey },
+          ].map(({ num, tab }) => {
+            const active = activeTab === tab
+            return (
+              <button
+                key={num}
+                onClick={() => setActiveTab(tab)}
+                aria-pressed={active}
+                aria-label={`View ${TABS[tab].label}`}
+                style={{
+                  width: '74px',
+                  height: '74px',
+                  border: active ? 'none' : '1px solid #909090',
+                  background: active ? 'rgba(207,255,85,0.15)' : 'transparent',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-end',
+                  padding: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '9px', color: active ? '#CFFF55' : '#909090', letterSpacing: '0.1em' }}>SPEC</div>
+                <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '28px', color: active ? '#CFFF55' : '#909090', lineHeight: 1 }}>{num}</div>
+              </button>
+            )
+          })}
         </div>
       </div>
 
