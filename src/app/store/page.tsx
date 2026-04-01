@@ -4,10 +4,9 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Shield, Package, Shirt, Target, Tent, Crosshair, Wrench,
-  ChevronRight, ArrowLeft, X, Check, Bell, LayoutGrid, ChevronLeft, Clock,
+  ChevronRight, ArrowLeft, X, LayoutGrid, ChevronLeft, Clock,
 } from 'lucide-react'
 import type { ElementType } from 'react'
-import { supabase } from '@/lib/supabase'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -555,7 +554,7 @@ function ClassSidebar({ catKey, onSelect, onBack }: { catKey:string; onSelect:(k
 
 // ── Product card ──────────────────────────────────────────────────────────────
 
-function ProductCard({ product, accent, priceColor, Icon, onNotify }: { product:Product; accent:string; priceColor:string; Icon:ElementType; onNotify:(n:string)=>void }) {
+function ProductCard({ product, accent, priceColor, Icon }: { product:Product; accent:string; priceColor:string; Icon:ElementType }) {
   const [hov, setHov] = useState(false)
   const bc = product.badge ? (BADGE_COL[product.badge] ?? accent) : accent
   return (
@@ -608,9 +607,10 @@ function ProductCard({ product, accent, priceColor, Icon, onNotify }: { product:
         {/* Footer */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:12, borderTop:`1px solid ${BORDER}`, marginTop:'auto' }}>
           <span style={{ fontFamily:ORB, fontSize:'15px', fontWeight:700, color:priceColor }}>{product.price}</span>
-          <button onClick={() => onNotify(product.name)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 11px', background:`${accent}14`, border:`1px solid ${accent}3A`, borderRadius:2, color:accent, fontFamily:MONO, fontSize:'8px', letterSpacing:'0.1em', cursor:'pointer' }}>
-            <Bell size={10} /> NOTIFY ME
-          </button>
+          <div style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 11px', background:`rgba(255,255,255,0.04)`, border:`1px solid rgba(255,255,255,0.1)`, borderRadius:2 }}>
+            <Clock size={10} color="rgba(255,255,255,0.3)" />
+            <span style={{ fontFamily:MONO, fontSize:'8px', color:'rgba(255,255,255,0.3)', letterSpacing:'0.1em' }}>COMING SOON</span>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -619,8 +619,8 @@ function ProductCard({ product, accent, priceColor, Icon, onNotify }: { product:
 
 // ── Product grid ──────────────────────────────────────────────────────────────
 
-function ProductGrid({ catKey, classKey, onBackToClasses, onBackToCategories, onNotify }: {
-  catKey:string; classKey:string; onBackToClasses:()=>void; onBackToCategories:()=>void; onNotify:(n:string)=>void
+function ProductGrid({ catKey, classKey, onBackToClasses, onBackToCategories }: {
+  catKey:string; classKey:string; onBackToClasses:()=>void; onBackToCategories:()=>void
 }) {
   const cat = catalog[catKey]
   const cls = cat.classes[classKey]
@@ -642,7 +642,7 @@ function ProductGrid({ catKey, classKey, onBackToClasses, onBackToCategories, on
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(220px, 1fr))', gap:14 }}>
         {cls.products.map((p,i) => (
           <motion.div key={p.name} initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.07, duration:0.3, ease:'easeOut' }}>
-            <ProductCard product={p} accent={cat.accent} priceColor={cat.priceColor} Icon={cat.Icon} onNotify={onNotify} />
+            <ProductCard product={p} accent={cat.accent} priceColor={cat.priceColor} Icon={cat.Icon} />
           </motion.div>
         ))}
       </div>
@@ -704,46 +704,6 @@ function ComingSoonPanel({ catKey }: { catKey: string }) {
   )
 }
 
-// ── Notify modal ──────────────────────────────────────────────────────────────
-
-function NotifyModal({ product, email, submitted, onEmail, onSubmit, onClose }: {
-  product:string; email:string; submitted:boolean; onEmail:(v:string)=>void; onSubmit:(e:React.FormEvent)=>void; onClose:()=>void
-}) {
-  return (
-    <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-      style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.82)', backdropFilter:'blur(6px)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000 }}
-      onClick={onClose}
-    >
-      <motion.div initial={{ scale:0.93, y:16 }} animate={{ scale:1, y:0 }} exit={{ scale:0.93, y:16 }} transition={t025}
-        onClick={e=>e.stopPropagation()}
-        style={{ background:'#1C1C1C', border:`1px solid ${BORDER}`, borderTop:`2px solid ${ACCENT}`, borderRadius:4, padding:32, width:400, maxWidth:'90vw', position:'relative' }}
-      >
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'rgba(255,255,255,0.35)', cursor:'pointer' }}><X size={17} /></button>
-        <p style={{ fontFamily:MONO, fontSize:'9px', color:ACCENT, letterSpacing:'0.18em', marginBottom:8 }}>// AVAILABILITY ALERT</p>
-        <h3 style={{ fontFamily:ORB, fontSize:'18px', fontWeight:700, color:'#fff', marginBottom:6 }}>NOTIFY ME</h3>
-        <p style={{ fontFamily:RAJ, fontSize:'14px', color:'rgba(255,255,255,0.45)', marginBottom:24, lineHeight:1.5 }}>
-          Get briefed when <span style={{ color:'#fff' }}>{product}</span> is available.
-        </p>
-        <AnimatePresence mode="wait">
-          {submitted ? (
-            <motion.div key="done" initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} style={{ display:'flex', alignItems:'center', gap:10, color:'#22C55E', fontFamily:MONO, fontSize:'12px', letterSpacing:'0.1em' }}>
-              <Check size={16} /> YOU&apos;RE ON THE LIST
-            </motion.div>
-          ) : (
-            <motion.form key="form" initial={{ opacity:0 }} animate={{ opacity:1 }} onSubmit={onSubmit} style={{ display:'flex', gap:8 }}>
-              <input type="email" required value={email} onChange={e=>onEmail(e.target.value)} placeholder="your@email.com"
-                style={{ flex:1, background:'#111', border:`1px solid rgba(255,255,255,0.14)`, borderRadius:2, padding:'10px 14px', color:'#fff', fontFamily:MONO, fontSize:'12px', outline:'none' }} />
-              <button type="submit" style={{ padding:'10px 20px', background:ACCENT, border:'none', borderRadius:2, color:'#000', fontFamily:MONO, fontSize:'10px', fontWeight:700, letterSpacing:'0.1em', cursor:'pointer', flexShrink:0 }}>
-                ALERT ME
-              </button>
-            </motion.form>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
-  )
-}
-
 // ── Mobile menu drawer ────────────────────────────────────────────────────────
 
 function MobileMenu({ onClose, onClassSelect }: { onClose:()=>void; onClassSelect:(cat:string, cls:string)=>void }) {
@@ -802,10 +762,6 @@ export default function StorePage() {
   const [selectedCat,  setSelectedCat]  = useState<string|null>(null)
   const [selectedClass,setSelectedClass]= useState<string|null>(null)
   const [mobileOpen,   setMobileOpen]   = useState(false)
-  const [notifyProduct,setNotifyProduct]= useState<string|null>(null)
-  const [email,        setEmail]        = useState('')
-  const [submitted,    setSubmitted]    = useState(false)
-
   const pickCategory = (key: string) => { setSelectedCat(key); setSelectedClass(null); setDrillDown(1) }
   const pickClass    = (key: string) => { setSelectedClass(key); setDrillDown(2) }
   const backToCats   = ()            => { setDrillDown(0); setSelectedCat(null); setSelectedClass(null) }
@@ -813,13 +769,6 @@ export default function StorePage() {
 
   const mobileClassSelect = (cat: string, cls: string) => {
     setSelectedCat(cat); setSelectedClass(cls); setDrillDown(2)
-  }
-
-  const handleNotify = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await supabase.from('astra_registered_interest').insert({ email, interest_type: 'product_notify', product: notifyProduct })
-    setSubmitted(true)
-    setTimeout(() => { setNotifyProduct(null); setSubmitted(false); setEmail('') }, 2500)
   }
 
   // Marquee / hero CTA click
@@ -907,7 +856,6 @@ export default function StorePage() {
                 <ProductGrid
                   catKey={selectedCat} classKey={selectedClass}
                   onBackToClasses={backToCls} onBackToCategories={backToCats}
-                  onNotify={setNotifyProduct}
                 />
               </motion.div>
             ) : (
@@ -947,15 +895,6 @@ export default function StorePage() {
         )}
       </AnimatePresence>
 
-      {/* ── NOTIFY MODAL ─────────────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {notifyProduct && (
-          <NotifyModal product={notifyProduct} email={email} submitted={submitted}
-            onEmail={setEmail} onSubmit={handleNotify}
-            onClose={() => { setNotifyProduct(null); setSubmitted(false); setEmail('') }}
-          />
-        )}
-      </AnimatePresence>
     </div>
   )
 }
