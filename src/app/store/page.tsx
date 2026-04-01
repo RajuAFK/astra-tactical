@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Shield, Package, Shirt, Target,
+  Shield, Package, Shirt, Target, Tent,
   ChevronRight, ArrowLeft, X, Check, Bell, LayoutGrid, ChevronLeft,
 } from 'lucide-react'
 import type { ElementType } from 'react'
@@ -120,6 +120,34 @@ const catalog: Record<string, Cat> = {
       ]},
     },
   },
+  SURVIVAL: {
+    label: 'Survival Gear', code: 'SURV', accent: '#F97316', Icon: Tent,
+    desc: 'Camping · Navigation · Fire · Hydration',
+    classes: {
+      CAMPING:    { label: 'Camping Gear',          abbr: 'CMP', products: [
+        { name: 'Emergency Bivvy Bag',             price: '₹1,400',                   desc: 'Retains 90% body heat. Windproof outer layer.' },
+        { name: 'Silnylon Tarp — 3×3m',            price: '₹980',                     desc: '8 guy-out points. Packs to fist size.' },
+        { name: 'Paracord — 30m',                  price: '₹380',  badge: 'ESSENTIAL', desc: '550 lb rated. 7-strand inner core.' },
+        { name: 'Folding Camp Shovel',             price: '₹860',                     desc: 'Hardened steel blade. Tri-fold compact.' },
+      ]},
+      NAVIGATION: { label: 'Navigation Tools',     abbr: 'NAV', products: [
+        { name: 'Military Lensatic Compass',       price: '₹1,200',                   desc: 'Luminous dial. Declination-adjustable bezel.' },
+        { name: 'Baseplate Orienteering Compass',  price: '₹680',  badge: 'NEW',       desc: 'UTM grid. Built-in magnifier lens.' },
+        { name: 'Waterproof Map Case',             price: '₹480',                     desc: 'A4/A5 fold. Double-seal zip. Lanyard loop.' },
+        { name: 'Topographic Ruler Set',           price: '₹320',                     desc: '1:25k and 1:50k scales. Grid reference tool.' },
+      ]},
+      FIRE:       { label: 'Fire Starters',         abbr: 'FIR', products: [
+        { name: 'Ferro Rod Fire Starter',          price: '₹580',  badge: 'ESSENTIAL', desc: '12,000+ strike rated. Works wet.' },
+        { name: 'Waterproof Matches — 50 pk',      price: '₹280',                     desc: 'Windproof. Burns 12 seconds per match.' },
+        { name: 'Fire Paste Tabs — 10 pk',         price: '₹320',                     desc: 'Burns in rain and wind. No igniter needed.' },
+      ]},
+      HYDRATION:  { label: 'Hydration Systems',    abbr: 'HYD', products: [
+        { name: '2L Hydration Bladder',            price: '₹1,100', badge: 'NEW',      desc: 'BPA-free. Universal fit hose. Bite valve.' },
+        { name: '3L Hydration Bladder',            price: '₹1,300',                   desc: 'Wide-mouth fill. Dishwasher-safe body.' },
+        { name: 'Hydration Pack — 10L',            price: '₹2,800',                   desc: 'Integrated 2L bladder. External MOLLE loops.' },
+      ]},
+    },
+  },
 }
 
 // ─── Hero slides ──────────────────────────────────────────────────────────────
@@ -130,6 +158,7 @@ const HERO_SLIDES = [
   { tag: 'APPAREL LINE',       line1: 'DRESS',           line2: 'THE OP.',        sub: 'Combat shirts, BDUs and tactical gloves for every engagement.',     accent: '#3B82F6', catKey: 'APPAREL'       },
   { tag: 'ACCESSORIES',        line1: 'KITTED',          line2: 'OUT.',           sub: 'Optics, slings, holsters and MOLLE pouches, fully spec\'d.',        accent: '#F59E0B', catKey: 'ACCESSORIES'   },
   { tag: 'AMMUNITION',         line1: 'LOADED &',        line2: 'ACCURATE.',      sub: 'Standard, biodegradable and tracer BBs for every setup.',           accent: '#EF4444', catKey: 'AMMUNITION'    },
+  { tag: 'SURVIVAL SERIES',   line1: 'BUILT TO',        line2: 'SURVIVE.',       sub: 'Camping, navigation, fire starters and hydration for field ops.',    accent: '#F97316', catKey: 'SURVIVAL'      },
 ]
 
 // ─── Marquee cards ────────────────────────────────────────────────────────────
@@ -139,8 +168,9 @@ const MARQUEE_CARDS = [
   { label: 'APPAREL',      sub: 'Combat Shirts · BDUs · Gloves',         accent: '#3B82F6', catKey: 'APPAREL'     },
   { label: 'ACCESSORIES',  sub: 'Optics · Slings · Holsters · Pouches',  accent: '#F59E0B', catKey: 'ACCESSORIES' },
   { label: 'AMMUNITION',   sub: 'Standard · Bio · Tracer BBs',           accent: '#EF4444', catKey: 'AMMUNITION'  },
-  { label: 'REPLICAS',     sub: 'Coming Q3 2026',                         accent: '#CFFF55', catKey: null          },
-  { label: 'UPGRADE PARTS',sub: 'Coming Q4 2026',                         accent: '#A855F7', catKey: null          },
+  { label: 'SURVIVAL GEAR', sub: 'Camping · Navigation · Fire · Hydration', accent: '#F97316', catKey: 'SURVIVAL'    },
+  { label: 'REPLICAS',      sub: 'Coming Q3 2026',                          accent: '#CFFF55', catKey: null          },
+  { label: 'UPGRADE PARTS', sub: 'Coming Q4 2026',                          accent: '#A855F7', catKey: null          },
 ]
 
 // ─── Animation variants ───────────────────────────────────────────────────────
