@@ -246,6 +246,8 @@ const ELEMENTS = [
   },
 ]
 
+const ACCENT = '#CFFF55'
+
 export default function TacticalBackground() {
   return (
     <div
@@ -258,6 +260,18 @@ export default function TacticalBackground() {
         overflow: 'hidden',
       }}
     >
+      {/* Lime radial glow — left-side, same position as store hero */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: `radial-gradient(ellipse 60% 55% at 15% 45%, ${ACCENT}0F 0%, transparent 65%)`,
+      }} />
+      {/* Subtle grid overlay — matches store hero */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        opacity: 0.028,
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+      }} />
       {ELEMENTS.map(({ id, x, y, size, rotate, svg }) => (
         <svg
           key={id}

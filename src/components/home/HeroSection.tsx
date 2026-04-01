@@ -16,24 +16,6 @@ export default function HeroSection() {
         aria-label="Astra Tactical field footage background video"
       />
 
-      {/* Radial accent glow — matches store hero */}
-      <div
-        className="absolute inset-0"
-        style={{ background: `radial-gradient(ellipse 70% 80% at 20% 55%, ${ACCENT}18 0%, transparent 65%)` }}
-        aria-hidden="true"
-      />
-
-      {/* Subtle grid overlay — matches store hero */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          opacity: 0.03,
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }}
-        aria-hidden="true"
-      />
-
       {/* Dark gradient overlay */}
       <div
         className="absolute inset-0"
@@ -44,20 +26,12 @@ export default function HeroSection() {
       {/* Scanlines */}
       <ScanlineOverlay />
 
-      {/* Corner brackets — matches store hero, inset from video area edges */}
-      {[
-        { top: '14%', left: '1.5%',  borderTop: `2px solid ${ACCENT}55`,  borderLeft:  `2px solid ${ACCENT}55`  },
-        { top: '14%', right: '1.5%', borderTop: `2px solid ${ACCENT}55`,  borderRight: `2px solid ${ACCENT}55`  },
-        { bottom: '8%', left: '1.5%',  borderBottom: `2px solid ${ACCENT}22`, borderLeft:  `2px solid ${ACCENT}22` },
-        { bottom: '8%', right: '1.5%', borderBottom: `2px solid ${ACCENT}22`, borderRight: `2px solid ${ACCENT}22` },
-      ].map((s, i) => (
-        <div
-          key={i}
-          className="absolute pointer-events-none"
-          style={{ width: 32, height: 32, zIndex: 11, ...s }}
-          aria-hidden="true"
-        />
-      ))}
+      {/* Corner brackets — top bar corners */}
+      <div className="absolute pointer-events-none" style={{ top: 10, left: 16, width: 28, height: 28, zIndex: 11, borderTop: `2px solid ${ACCENT}66`, borderLeft: `2px solid ${ACCENT}66` }} aria-hidden="true" />
+      <div className="absolute pointer-events-none" style={{ top: 10, right: 16, width: 28, height: 28, zIndex: 11, borderTop: `2px solid ${ACCENT}66`, borderRight: `2px solid ${ACCENT}66` }} aria-hidden="true" />
+      {/* Corner brackets — bottom bar corners */}
+      <div className="absolute pointer-events-none" style={{ bottom: 10, left: 16, width: 28, height: 28, zIndex: 11, borderBottom: `2px solid ${ACCENT}33`, borderLeft: `2px solid ${ACCENT}33` }} aria-hidden="true" />
+      <div className="absolute pointer-events-none" style={{ bottom: 10, right: 16, width: 28, height: 28, zIndex: 11, borderBottom: `2px solid ${ACCENT}33`, borderRight: `2px solid ${ACCENT}33` }} aria-hidden="true" />
 
       {/*
         Screen frame — SVG recreation of the original PNG shape.
