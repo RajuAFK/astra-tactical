@@ -107,8 +107,8 @@ export default function TheSportPage() {
           {/* Stat strip */}
           <div
             style={{
-              display: 'flex',
-              gap: '0',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
               marginTop: '64px',
               borderTop: `1px solid ${ORANGE_BORDER}`,
             }}
@@ -122,9 +122,9 @@ export default function TheSportPage() {
               <div
                 key={i}
                 style={{
-                  flex: 1,
                   padding: '24px 20px',
-                  borderRight: i < 3 ? `1px solid ${ORANGE_BORDER}` : 'none',
+                  borderRight: i % 2 === 0 ? `1px solid ${ORANGE_BORDER}` : 'none',
+                  borderBottom: i < 2 ? `1px solid ${ORANGE_BORDER}` : 'none',
                 }}
               >
                 <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(22px, 3vw, 36px)', color: ORANGE, fontWeight: 700 }}>{s.val}</div>

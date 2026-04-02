@@ -102,7 +102,7 @@ export default function ServicesPage() {
           </p>
 
           {/* Service count strip */}
-          <div style={{ display: 'flex', gap: '0', marginTop: '64px', borderTop: `1px solid ${PURPLE_BORDER}` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', marginTop: '64px', borderTop: `1px solid ${PURPLE_BORDER}` }}>
             {[
               { val: '3D-PRINT', label: 'Replica manufacturing' },
               { val: 'VMS', label: 'Venue management' },
@@ -111,7 +111,6 @@ export default function ServicesPage() {
               <div
                 key={i}
                 style={{
-                  flex: 1,
                   padding: '24px 20px',
                   borderRight: i < 2 ? `1px solid ${PURPLE_BORDER}` : 'none',
                 }}
@@ -140,7 +139,7 @@ export default function ServicesPage() {
               margin: '0 auto',
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '64px',
+              gap: 'clamp(32px, 5vw, 64px)',
               alignItems: 'start',
             }}
           >
@@ -176,7 +175,7 @@ export default function ServicesPage() {
             </div>
 
             {/* Spec column */}
-            <div style={{ paddingTop: '52px' }}>
+            <div>
               <div
                 style={{
                   border: `1px solid ${PURPLE_BORDER}`,
