@@ -395,7 +395,7 @@ export default function Navbar() {
           {/* Left: action buttons */}
           <div className="flex items-center gap-3">
             <Link
-              href="https://mission-control-git-master-rajuafks-projects.vercel.app/login"
+              href="https://mission-control-plum-chi.vercel.app/login"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -603,7 +603,7 @@ export default function Navbar() {
                 transition={{ delay: navLinks.length * 0.06 + 0.14, duration: 0.28 }}
               >
                 <Link
-                  href="https://mission-control-git-master-rajuafks-projects.vercel.app/login"
+                  href="https://mission-control-plum-chi.vercel.app/login"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
