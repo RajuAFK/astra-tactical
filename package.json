@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "next build && node -e \"require('fs').copyFileSync('public/.htaccess','out/.htaccess')\" && gh-pages -d out -b deploy -t true"
+    "deploy": "next build && node -e \"require('fs').copyFileSync('public/.htaccess','out/.htaccess')\" && gh-pages -d out -b deploy -t"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.100.0",
