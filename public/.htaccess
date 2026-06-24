@@ -3,10 +3,15 @@ RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-RewriteCond %{REQUEST_FILENAME} !-d
+# Next.js 16 static export emits both `foo.html` and a sidecar `foo/` dir
+# (Next internal metadata). Without dropping the `!-d` check, Apache hits
+# the dir on `/foo` and 403s. Skip `!-d` so foo.html always wins.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Block direct access to Next.js sidecar metadata files.
+RewriteRule ^.*/__next\..* - [F,L]
 
 <FilesMatch "\.(?:js|css|woff2?|ttf|otf|eot|jpg|jpeg|png|webp|avif|gif|svg|ico)$">
   Header set Cache-Control "public, max-age=31536000, immutable"

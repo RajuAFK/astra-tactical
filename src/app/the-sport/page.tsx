@@ -127,7 +127,7 @@ export default function TheSportPage() {
                   borderBottom: i < 2 ? `1px solid ${ORANGE_BORDER}` : 'none',
                 }}
               >
-                <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(22px, 3vw, 36px)', color: ORANGE, fontWeight: 700 }}>{s.val}</div>
+                <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(22px, 3vw, 36px)', color: ORANGE, fontWeight: 700, whiteSpace: 'nowrap' }}>{s.val}</div>
                 <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.12em', marginTop: '4px' }}>{s.label}</div>
               </div>
             ))}

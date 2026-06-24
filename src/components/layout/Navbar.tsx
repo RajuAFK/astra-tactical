@@ -5,7 +5,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Check } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+
+const INTEREST_API =
+  process.env.NEXT_PUBLIC_INTEREST_API || '/api/register-interest.php'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -41,11 +43,18 @@ function RegisterForm({ onClose }: { onClose: () => void }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await supabase.from('astra_registered_interest').insert({
-      name,
-      email,
-      interest_type: interest,
-    })
+    try {
+      const res = await fetch(INTEREST_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, interest_type: interest }),
+      })
+      if (!res.ok) {
+        console.warn('register-interest non-2xx:', res.status)
+      }
+    } catch (err) {
+      console.warn('register-interest failed:', err)
+    }
     setLoading(false)
     setDone(true)
     setTimeout(onClose, 2800)
@@ -415,6 +424,27 @@ export default function Navbar() {
             >
               MISSION CONTROL
             </Link>
+            <a
+              href="https://www.reddit.com/r/IndianAirsoftAssoc_/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: 'var(--font-barlow-condensed)',
+                fontSize: '12px',
+                fontWeight: 600,
+                letterSpacing: '0.15em',
+                color: '#080808',
+                background: '#FF6B00',
+                padding: '7px 16px',
+                textDecoration: 'none',
+                transition: 'opacity 0.2s',
+                whiteSpace: 'nowrap',
+              }}
+              className="hover:opacity-80"
+              aria-label="Join the community on Reddit"
+            >
+              COMMUNITY
+            </a>
             <button
               ref={btnRef}
               onClick={openRegister}
@@ -623,6 +653,34 @@ export default function Navbar() {
                 >
                   MISSION CONTROL
                 </Link>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ delay: navLinks.length * 0.06 + 0.17, duration: 0.28 }}
+              >
+                <a
+                  href="https://www.reddit.com/r/IndianAirsoftAssoc_/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontFamily: 'var(--font-barlow-condensed)',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    letterSpacing: '0.15em',
+                    color: '#080808',
+                    background: '#FF6B00',
+                    padding: '10px 28px',
+                    textDecoration: 'none',
+                    display: 'block',
+                  }}
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Join the community on Reddit"
+                >
+                  COMMUNITY
+                </a>
               </motion.div>
 
               <motion.div

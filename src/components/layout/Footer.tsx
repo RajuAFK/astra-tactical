@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Instagram, Youtube } from 'lucide-react'
 
 export default function Footer() {
@@ -15,7 +16,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
           {/* Column 1 */}
           <div>
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-3 mb-3">
+              <Image
+                src="/logos/logo-3d.png"
+                alt="Astra Tactical"
+                width={36}
+                height={36}
+                style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+                priority={false}
+              />
               <span
                 style={{
                   fontFamily: 'var(--font-orbitron)',

@@ -97,7 +97,7 @@ export default function WeaponComparisonSection() {
     >
       <div className="absolute inset-0 grid-bg" style={{ opacity: 0.15 }} aria-hidden="true" />
 
-      <div className="relative max-w-6xl mx-auto">
+      <div className="relative max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-14">
           <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#CFFF55', opacity: 0.7, letterSpacing: '0.2em', marginBottom: '10px' }}>
@@ -132,31 +132,31 @@ export default function WeaponComparisonSection() {
                     textAlign: 'left',
                     transition: 'all 0.2s',
                     borderRadius: 0,
-                    minWidth: '200px',
+                    minWidth: '240px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
                   }}
                 >
                   {/* Weapon thumbnail */}
-                  <div style={{ position: 'relative', width: '48px', height: '48px', flexShrink: 0, background: '#0a0a0a', borderRadius: '50%' }}>
+                  <div style={{ position: 'relative', width: '56px', height: '56px', flexShrink: 0, background: '#0a0a0a', borderRadius: '50%' }}>
                     <Image
                       src={w.image}
                       alt={w.name}
                       fill
-                      sizes="48px"
+                      sizes="56px"
                       style={{ objectFit: 'contain', mixBlendMode: 'screen', padding: '4px' }}
                     />
                   </div>
                   {/* Text info */}
                   <div>
-                    <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '9px', color: w.accentColor, letterSpacing: '0.15em', marginBottom: '4px' }}>
+                    <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: w.accentColor, letterSpacing: '0.15em', marginBottom: '4px' }}>
                       {w.classLabel}
                     </div>
-                    <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '12px', color: '#ffffff' }}>
+                    <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '14px', color: '#ffffff' }}>
                       {w.name}
                     </div>
-                    <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#8A8A8A', marginTop: '3px' }}>
+                    <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#8A8A8A', marginTop: '3px' }}>
                       {w.energyJ}J
                     </div>
                   </div>
@@ -166,7 +166,7 @@ export default function WeaponComparisonSection() {
           </div>
 
           {/* Circular HUD display */}
-          <div className="relative flex items-center justify-center" style={{ width: '380px', height: '380px', flexShrink: 0 }}>
+          <div className="relative flex items-center justify-center" style={{ width: '480px', height: '480px', flexShrink: 0 }}>
             {/* Background circle */}
             <div
               style={{
@@ -194,8 +194,8 @@ export default function WeaponComparisonSection() {
             <div
               className="absolute"
               style={{
-                width: '360px',
-                height: '360px',
+                width: '460px',
+                height: '460px',
                 animation: shouldReduce ? 'none' : 'spinClockwise 8s linear infinite',
                 zIndex: 1,
                 opacity: weapon ? 0.75 : 0.25,
@@ -203,15 +203,15 @@ export default function WeaponComparisonSection() {
               }}
               aria-hidden="true"
             >
-              <Image src="/ring-middle.png" alt="" fill sizes="360px" style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+              <Image src="/ring-middle.png" alt="" fill sizes="460px" style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
             </div>
 
             {/* Ring — smaller, counter-clockwise (behind gun) */}
             <div
               className="absolute"
               style={{
-                width: '220px',
-                height: '220px',
+                width: '280px',
+                height: '280px',
                 animation: shouldReduce ? 'none' : 'spinAntiClockwise 6s linear infinite',
                 zIndex: 2,
                 opacity: weapon ? 0.45 : 0.15,
@@ -219,7 +219,7 @@ export default function WeaponComparisonSection() {
               }}
               aria-hidden="true"
             >
-              <Image src="/ring-middle.png" alt="" fill sizes="220px" style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
+              <Image src="/ring-middle.png" alt="" fill sizes="280px" style={{ objectFit: 'contain', mixBlendMode: 'screen' }} />
             </div>
 
             {/* Weapon image — above rings so it's clearly visible */}
@@ -228,7 +228,7 @@ export default function WeaponComparisonSection() {
                 <motion.div
                   key={selected}
                   className="absolute"
-                  style={{ width: '180px', height: '180px', zIndex: 5 }}
+                  style={{ width: '230px', height: '230px', zIndex: 5 }}
                   initial={{ opacity: 0, scale: 0.85 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.85 }}
@@ -238,7 +238,7 @@ export default function WeaponComparisonSection() {
                     src={weapon.image}
                     alt={weapon.name}
                     fill
-                    sizes="180px"
+                    sizes="230px"
                     style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
                   />
                 </motion.div>
@@ -248,24 +248,24 @@ export default function WeaponComparisonSection() {
             {/* Energy arc SVG — outermost ring */}
             <svg
               className="absolute"
-              width="380"
-              height="380"
-              viewBox="0 0 380 380"
+              width="480"
+              height="480"
+              viewBox="0 0 480 480"
               style={{ zIndex: 4, transform: 'rotate(-90deg)' }}
               aria-hidden="true"
             >
               {/* Track */}
-              <circle cx="190" cy="190" r="178" fill="none" stroke="rgba(207,255,85,0.12)" strokeWidth="3" />
+              <circle cx="240" cy="240" r="226" fill="none" stroke="rgba(207,255,85,0.12)" strokeWidth="3" />
               {/* Energy fill arc */}
               <circle
-                cx="190"
-                cy="190"
-                r="178"
+                cx="240"
+                cy="240"
+                r="226"
                 fill="none"
                 stroke={weapon ? weapon.accentColor : 'rgba(255,255,255,0.15)'}
                 strokeWidth="3"
                 strokeLinecap="butt"
-                strokeDasharray={`${(arcPct / 100) * (2 * Math.PI * 178)} ${2 * Math.PI * 178}`}
+                strokeDasharray={`${(arcPct / 100) * (2 * Math.PI * 226)} ${2 * Math.PI * 226}`}
                 style={{ transition: 'stroke-dasharray 0.8s ease-out' }}
               />
             </svg>
@@ -273,7 +273,7 @@ export default function WeaponComparisonSection() {
             {/* Center prompt — no selection */}
             {!weapon && (
               <div className="absolute text-center" style={{ zIndex: 10 }}>
-                <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: 'rgba(207,255,85,0.5)', letterSpacing: '0.15em' }}>
+                <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '12px', color: 'rgba(207,255,85,0.5)', letterSpacing: '0.15em' }}>
                   SELECT A<br />WEAPON
                 </p>
               </div>
@@ -281,11 +281,11 @@ export default function WeaponComparisonSection() {
 
             {/* Energy readout — bottom of circle, below the gun image */}
             {weapon && (
-              <div className="absolute text-center" style={{ zIndex: 10, bottom: '36px' }}>
-                <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '22px', color: weapon.accentColor, fontWeight: 900, lineHeight: 1 }}>
+              <div className="absolute text-center" style={{ zIndex: 10, bottom: '48px' }}>
+                <div style={{ fontFamily: 'var(--font-orbitron)', fontSize: '28px', color: weapon.accentColor, fontWeight: 900, lineHeight: 1 }}>
                   {weapon.energyJ}J
                 </div>
-                <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '8px', color: '#8A8A8A', letterSpacing: '0.1em', marginTop: '4px' }}>
+                <div style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#8A8A8A', letterSpacing: '0.1em', marginTop: '4px' }}>
                   MUZZLE ENERGY
                 </div>
               </div>
